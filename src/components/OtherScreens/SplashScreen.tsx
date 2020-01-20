@@ -1,19 +1,31 @@
 import React from 'react';
 import {
-  View, Text, TouchableOpacity, Image, Button,
+  View, Text,
 } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import NotAuthNavigation from '../..';
 import { globalStyles } from '..'
 import { useGlobal, store } from '../../store'
+import { Button  } from 'react-native-paper';
+import { w } from '../../constants';
 import { Role } from '../../enum/Enums';
+import NavigationAdmin from '../../NavigationAdmin';
+import NavigationUser from '../../NavigationUser';
 
 interface Props { }
 
+
+const { userLogin, token } = store.state;
+
 class SplashScreen extends React.Component<any, Props> {
+  
+  componentDidMount = async () => {    
+    console.log('userLogin: ', userLogin)
+    console.log('token: ', token)
+  }
   render() {
-    const { bodySp, sectionContainer, sectionTitle, sectionDescription, paddingBottom,
+    const { bodySp, buttonContenSp, sectionTitle, sectionDescription, paddingBottom,
       buttonContainerSp, buttonTitleSp } = globalStyles
     const { navigation } = this.props
     return (
@@ -28,11 +40,13 @@ class SplashScreen extends React.Component<any, Props> {
             <Image source={require('../../../icon/bigHome.png')} style={globalStyles.image} />
           </View> */}
           <View style={paddingBottom}>
-            <TouchableOpacity
+            <Button 
+              mode="contained"
+              uppercase={false}
               onPress={() => navigation.navigate('App')}
-              style={buttonContainerSp}>
-                <Text style={buttonTitleSp}>Продолжить</Text>
-            </TouchableOpacity>
+              contentStyle={buttonContenSp}
+              style={buttonContainerSp}
+              labelStyle={buttonTitleSp}>Продолжить </Button >
           </View>
         </View>
       </View>
@@ -40,12 +54,11 @@ class SplashScreen extends React.Component<any, Props> {
   }
 }
 
-const { userLogin, token } = store.state;
 
 const RootStack = createStackNavigator(
   {
     Splash: SplashScreen,
-    App: NotAuthNavigation ,
+    App: !token ? NotAuthNavigation : userLogin.enum_Role == Role.admin ? NavigationAdmin : NavigationUser,
   },
   {
     initialRouteName: 'Splash',
