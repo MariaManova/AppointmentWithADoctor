@@ -4,9 +4,9 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { h, w, ColorApp } from '../constants'
 
 const globalStyles = StyleSheet.create({
-  headDrawer: { 
-    height: 210, 
-    backgroundColor: '#BE8F6C' 
+  headDrawer: {
+    height: 180,
+    backgroundColor: ColorApp
   },
   scrollView: {
     flex: 0,
@@ -28,19 +28,13 @@ const globalStyles = StyleSheet.create({
     width: w
   },
   cardStyle: {
-    backgroundColor: ColorApp,
     paddingBottom: 30,
-    marginHorizontal: 5,
     borderRadius: 10
   },
   engine: {
     position: 'absolute',
     left: 0,
     top: 0,
-  },
-  bodySp: {
-    flex: 1,
-    backgroundColor: 'lightsteelblue',
   },
   body: {
     backgroundColor: '#d9d9d9',
@@ -50,7 +44,7 @@ const globalStyles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'lightsteelblue',
   },
-  container: {
+  mrgTop: {
     marginTop: 10,
   },
   sectionContainer: {
@@ -83,11 +77,6 @@ const globalStyles = StyleSheet.create({
     alignSelf: 'center',
     bottom: 70,
   },
-  paddingBottom: {
-    width: w*0.95,
-    position: 'absolute',
-    bottom: 50,
-  },
   buttonContainer: {
     backgroundColor: ColorApp,
     height: 40,
@@ -100,11 +89,20 @@ const globalStyles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
+  bodySp: {
+    flex: 1,
+    backgroundColor: 'lightsteelblue',
+  },
+  paddingBottom: {
+    position: 'absolute',
+    bottom: 50,
+  },
+  buttonContenSp: {
+    width: w*0.95,
+    height: 45,
+  },
   buttonContainerSp: {
     backgroundColor: '#000099',
-    height: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 7,
   },
   buttonTitleSp: {
@@ -114,18 +112,14 @@ const globalStyles = StyleSheet.create({
   imageIcon: {
     width: 130,
     height: 130,
-    borderRadius: 60
+    borderRadius: 40
   },
   imageCont: {
-    width: 130,
-    height: 130,
-    borderRadius: 60,
-    marginLeft: 20,
-    marginTop: 20,
-    paddingBottom: 30,
+    marginLeft: 50,
+    marginTop: 40,
   },
   back: {
-    marginLeft: 170,
+    marginRight: 160,
     marginBottom: -60,
     borderRadius: 50,
     padding: 20,
@@ -310,6 +304,23 @@ const globalStyles = StyleSheet.create({
     marginHorizontal: 7, 
     padding: 5, 
     borderRadius: 10 
+  },
+  inputPaper: {
+    borderRadius: 10,
+    padding: 10,
+    height: 40,
+  },
+  inputMultiPaper:{
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignContent: 'center',
+  },
+  textInputPaper: {
+    width: w * 0.88,
+  },
+  textInputPaperModal: {
+    width: w * 0.80,
   },
 });
 
