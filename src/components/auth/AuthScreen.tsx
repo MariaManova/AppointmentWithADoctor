@@ -1,16 +1,17 @@
 import React, { PureComponent, useState, useEffect } from 'react';
 import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert,
+  StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert,
   ActivityIndicator, Image, RefreshControl
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { Header, globalStyles } from '..';
-import { h, w, ColorApp, serverUrl, Background } from '../../constants'
-import { User, initArrColor, arrText, AuthData, arrBool, initAuthBool, initAuthTxt, initAuthColor, authBool, authText } from '../../interfaces'
+import { h, w, ColorApp, serverUrl, Background, IndicatorApp } from '../../constants'
+import { User, AuthData, initAuthBool, initAuthTxt, initAuthColor, authBool, authText } from '../../interfaces'
 import { actions, store } from '../../store'
 import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../routes';
 import { Card, Input, Icon } from 'react-native-elements'
 import { Role } from '../../enum/Enums';
+import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
 
 
 interface Props { }
@@ -19,7 +20,7 @@ interface State { }
 class AuthScreen extends PureComponent<any, State, Props> {
   state = {
     email: '', password: '', good: true, submit: false, disBtn: true, refreshing: false,
-    badEnter: initAuthBool, errorText: initAuthTxt, colorIcon: initAuthColor, visibility: false
+    badEnter: initAuthBool, errorText: initAuthTxt, colorField: initAuthColor, visibility: false
   }
 
   componentDidMount = async () => {
@@ -29,11 +30,11 @@ class AuthScreen extends PureComponent<any, State, Props> {
   }
 
   render() {
-    const { email, password, badEnter, errorText, colorIcon, submit,
+    const { email, password, badEnter, errorText, colorField, submit,
       good, disBtn, refreshing, visibility } = this.state
     const { navigation } = this.props
-    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle } = locStyles
-    const { im, cardStyle, indicator, error, inputStyle, link } = globalStyles
+    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, inputPaperFree } = locStyles
+    const { im, cardStyle, indicator, error, inputStyle, link,textInputPaper, inputPaper } = globalStyles
     const backArrow = 'arrow-back';
     return (
       <View style={{ height: h }}>
@@ -51,18 +52,19 @@ class AuthScreen extends PureComponent<any, State, Props> {
             <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
           }>
           <Card containerStyle={cardStyle} >
-            {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View style={fixToText}>
-              <View style={textInput}>
-                <Input
-                  inputContainerStyle={[input, { borderColor: colorIcon.email }]}
-                  inputStyle={inputStyle}
+              <View style={{width: w * 0.72}}>
+                <TextInput
+                  style={[inputPaperFree, inputStyle]}
                   onChangeText={this.onChangeEmail.bind(this)}
-                  placeholder='Логин'
-                  autoCompleteType='name'
+                  autoCompleteType='email'
+                  textContentType='emailAddress'
+                  keyboardType='email-address'
+                  label='Email'
                   value={email}
-                  //onEndEditing={() => this.onCheckLogin(email)}
                   editable={!submit}
+                  theme={{ colors: { primary: colorField.email } }}
+                  //onEndEditing={() => this.onCheckLogin(email)}
                 // errorMessage={badEnter.email ? errorText.email : ''}
                 />
                 {badEnter.email && <Text style={error}>{errorText.email}</Text>}
@@ -72,12 +74,13 @@ class AuthScreen extends PureComponent<any, State, Props> {
             <View style={[fixToText, { marginTop: 20, }]}>
               <View style={textInput}>
                 <Input
-                  inputContainerStyle={[input, { borderColor: colorIcon.password }]}
+                  inputContainerStyle={[input, { borderColor: colorField.password }]}
                   inputStyle={inputStyle}
                   onChangeText={this.onChangePassword.bind(this)}
                   placeholder='Пароль'
                   autoCompleteType='password'
                   textContentType='password'
+                  keyboardType='twitter'
                   secureTextEntry={!visibility}
                   value={password}
                   //onEndEditing={() => this.onCheckPass(password)}
@@ -89,9 +92,8 @@ class AuthScreen extends PureComponent<any, State, Props> {
                 {/* {badEnter.password ? <Text style={error}>{errorText.password}</Text> : <View></View>} */}
               </View>
             </View>
-          </Card>
-
-          <View style={{ alignItems: "center" }}>
+            
+            <View style={{ alignItems: "center", marginTop: 20 }}>
             <View style={button}>
               <TouchableOpacity
                 onPress={this.onSubmit.bind(this)}
@@ -103,12 +105,15 @@ class AuthScreen extends PureComponent<any, State, Props> {
             </View>
           </View>
 
-          <Text style={link}>{'У вас еще нет аккаунта?'}</Text>
+          <Text style={link}>{'Нет аккаунта?'}</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate(REGISTRATION)}
             disabled={submit} >
             <Text style={[link, { marginTop: -20 }]}>{'Зарегистрируйтесь'}</Text>
           </TouchableOpacity>
+          </Card>
+
+          
 
         </ScrollView>
         {/* <TouchableOpacity
@@ -116,6 +121,13 @@ class AuthScreen extends PureComponent<any, State, Props> {
             disabled={submit} >
             <Text style={link}>{'Забыли пароль?'}</Text>
           </TouchableOpacity> */}
+        {submit && <Provider>
+              <Portal>
+                <Modal visible={submit} >
+                  <ActivityIndicator style={indicator} size={70} color={IndicatorApp} />
+                </Modal>
+              </Portal>
+            </Provider>}
 
       </View>
     );
@@ -128,27 +140,27 @@ class AuthScreen extends PureComponent<any, State, Props> {
   }
 
   private onChangeEmail(email: string) {
-    var { badEnter, errorText, colorIcon } = this.state
+    var { badEnter, errorText, colorField } = this.state
     if (email == ' ') { return }
     if (!email) {
       badEnter.email = true;
-      colorIcon.email = 'red'
+      colorField.email = 'red'
       errorText.email = 'Поле не заполнено!'
       this.setState({ badEnter, errorText, email, good: false });
       return;
     }
     else {
       badEnter.email = false;
-      colorIcon.email = ColorApp
+      colorField.email = ColorApp
       this.setState({ email });
       this.checkFields();
     }
   }
   private onCheckLogin(email: string) {
-    var { badEnter, errorText, colorIcon } = this.state
+    var { badEnter, errorText, colorField } = this.state
     if (email.trim().length < 4 || email.trim().length > 20) {
       badEnter.email = true;
-      colorIcon.email = 'red'
+      colorField.email = 'red'
       errorText.email = 'Логин должен быть длиной от 4 до 20 символов!'
       this.setState({ badEnter, errorText, email, good: false });
       return;
@@ -156,30 +168,30 @@ class AuthScreen extends PureComponent<any, State, Props> {
   }
 
   private onChangePassword(password: string) {
-    var { badEnter, errorText, colorIcon } = this.state
+    var { badEnter, errorText, colorField } = this.state
     if (password == ' ') { return }
     if (password.trim().length >= 8) {
       badEnter.password = false
-      colorIcon.password = 'green'
-      this.setState({ password: password.trim(), colorIcon, badPass: false });
+      colorField.password = 'green'
+      this.setState({ password: password.trim(), colorField, badPass: false });
       this.checkFields();
       return
     }
     else {
-      colorIcon.password = ColorApp
-      this.setState({ password: password.trim(), colorIcon });
+      colorField.password = ColorApp
+      this.setState({ password: password.trim(), colorField });
       this.checkFields();
     }
   }
   private onCheckPass(pass: string) {
     var badEnter = this.state.badEnter
     var errorText = this.state.errorText
-    var colorIcon = this.state.colorIcon
+    var colorField = this.state.colorField
     if (pass.trim().length < 8) {
       badEnter.password = true;
       errorText.password = 'Пароль должен иметь длину не менее 8 знаков!'
-      colorIcon.password = 'red'
-      this.setState({ badEnter, errorText, colorIcon, pass, good: false });
+      colorField.password = 'red'
+      this.setState({ badEnter, errorText, colorField, pass, good: false });
       return;
     }
   }
@@ -190,7 +202,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
 
   private onSubmit() {
     const { email, password, badEnter, errorText,
-      colorIcon, good } = this.state
+      colorField, good } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
@@ -198,20 +210,20 @@ class AuthScreen extends PureComponent<any, State, Props> {
     if (!email) {
       badEnter.email = true;
       errorText.email = 'Поле не заполнено!'
-      colorIcon.email = 'red'
-      this.setState({ badEnter, errorText, colorIcon, good: false });
+      colorField.email = 'red'
+      this.setState({ badEnter, errorText, colorField, good: false });
     }
     if (!password) {
       badEnter.password = true;
       errorText.password = 'Поле не заполнено!'
-      colorIcon.password = 'red'
-      this.setState({ badEnter, errorText, colorIcon, good: false });
+      colorField.password = 'red'
+      this.setState({ badEnter, errorText, colorField, good: false });
     }
     // if (password.trim().length < 8) {
     //   badEnter.password = true;
     //   errorText.password = 'Пароль должен иметь длину не менее 8 знаков!'
-    //   colorIcon.password = 'red'
-    //   this.setState({ badEnter, errorText, colorIcon, good: false });
+    //   colorField.password = 'red'
+    //   this.setState({ badEnter, errorText, colorField, good: false });
     // }
 
     if (!email || !password) {
@@ -234,7 +246,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     console.log('badEnter.email: ' + badEnter.email + ' badEnter.password: ' + badEnter.password)
     console.log('good', good)
     obj = {
-      Login: email,
+      Email: email,
       Password: password,
     }
     url = serverUrl + 'auth/signin';
@@ -277,7 +289,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       .then(function (data: AuthData) {
         if (data) {
           if (!store.state.token) {
-            actions.Login(data.token, data.userLogin)
+            actions.Login(data.token, data.patient, data.userLogin)
           }
           if (data.userLogin.enum_Role == Role.admin) {
             navigation.navigate(NAVIGATIONAdmin);
@@ -312,7 +324,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     this.setState({
       email: '', password: '', color: ColorApp,
       good: true, passGood: false, submit: false,
-      badEnter: arr, colorIcon: arrCol,
+      badEnter: arr, colorField: arrCol,
     })
   }
 }
@@ -362,6 +374,9 @@ const locStyles = StyleSheet.create({
     alignSelf: 'center',
     bottom: 50,
   },
+  inputPaperFree: {    
+    backgroundColor: '#fff',
+  }
 })
 
 export { AuthScreen };

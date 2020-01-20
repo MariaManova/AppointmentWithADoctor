@@ -65,14 +65,14 @@ export interface AuthData {
 export interface arrText {
   email: string,
   name: string,
-  surname: string,
+  address: string,
   password: string,
   repeatPassword: string
 };
 export interface arrBool {
   email: boolean,
   name: boolean,
-  surname: boolean,
+  address: boolean,
   password: boolean,
   repeatPassword: boolean
 };
@@ -93,6 +93,7 @@ export interface adrText {
 };
 export interface AuthData {
   token: string,
+  patient: Patient,
   userLogin: User,
 }
 export interface adrBool {
@@ -159,6 +160,13 @@ export const initialUser: User = {
 /**{
     uid: '', title: '', fk_Supervisor: '', fk_Image: '', fk_Status: 0, fk_Home: '', createdAt: new Date, editedAt: new Date, removed: false
   } */
+  export const initPatient: Patient = {        
+    id: 0,
+    address: '',
+    Fk_User: 0,
+    myAppointments: [],
+    user: initialUser
+}
 export const InitSpeciality: Speciality  ={
   id: 0,
   nameSpeciality: '',
@@ -180,27 +188,27 @@ export const InitialDoctor: Doctor = {
   placeOfWork: InitPlaceOfWork,
   user: initialUser,
 }
-export const initArrBool: arrBool = {
-  email: false,
-  name: false,
-  surname: false,
-  password: false,
-  repeatPassword: false
-};
-export const initArrTxt: arrText = {
-  email: '',
-  name: '',
-  surname: '',
-  password: '',
-  repeatPassword: ''
-};
-export const initArrColor: arrText = {
-  email: ColorApp,
-  name: ColorApp,
-  surname: ColorApp,
-  password: ColorApp,
-  repeatPassword: ColorApp
-};
+// export const initArrBool: arrBool = {
+//   email: false,
+//   name: false,
+//   address: false,
+//   password: false,
+//   repeatPassword: false
+// };
+// export const initArrTxt: arrText = {
+//   email: '',
+//   name: '',
+//   address: '',
+//   password: '',
+//   repeatPassword: ''
+// };
+// export const initArrColor: arrText = {
+//   email: ColorApp,
+//   name: ColorApp,
+//   address: ColorApp,
+//   password: ColorApp,
+//   repeatPassword: ColorApp
+// };
 
 export const initAuthBool: authBool = {
   email: false,
