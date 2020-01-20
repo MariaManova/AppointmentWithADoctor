@@ -4,11 +4,10 @@ import {
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { Role, Category } from '../../enum/Enums';
-import { h, w, ColorApp, NoFoto, serverUrl, NoAvatar, Background } from '../../constants'
-import { PROFILE } from '../../routes';
-import { Badge, Divider } from 'react-native-elements';
+import { h, w, NoAvatar } from '../../constants'
 import { store } from '../../store';
 import { Doctor, InitialDoctor, User, HomeData } from '../../interfaces';
+import { Rating, AirbnbRating, Badge, Divider } from 'react-native-elements';
 
 
 interface Props { }
@@ -19,62 +18,66 @@ interface State {
   newTenants: User[],
   loadError: boolean,
   refreshing: boolean,
+  rating: number
 }
+const ratingArr = ['Ужасный', 'Плохой', 'Нормальный', 'Хороший', 'Отличный']
 
 class DoctorProfile extends PureComponent<any, State, Props> {
 
-  state = { data: InitialDoctor, load: false, loadError: false, refreshing: false } as State
+  state = {
+    data: InitialDoctor, load: false, loadError: false, refreshing: false,
+    rating: 4.2
+  } as State
 
   componentDidMount = async () => {
     this.setState({ loadError: false })
-    var logAction = 'Профиль дома';
-    console.log('props: ', this.props)
-    console.log(' props.params: ', this.props.navigation.state.params)
-    try {
-      const { userLogin, token } = store.state;
-      var doctor: Doctor = this.props.navigation.state.params
-      if (token && (userLogin.enum_Role != Role.user || userLogin.id == doctor.id)) {
-        const response = await fetch(serverUrl + 'doctor/' + doctor.id,
-          { headers: { 'Authorization': `Bearer ${token}` } })
-        const data: HomeData = await response.json()
-        if (response.status == 200) {
-          this.setState({
-            data: data.homeData, approvedTentants: data.tantains,
-            newTenants: data.newTantains, load: true
-          })
-          console.log('Успех fetch ' + logAction, data)
-        }
-        else if (response.status == 404) {
-          console.log('Внимание', 'Доктор не найден id=' + doctor.id);
-          this.setState({ loadError: true })
-        }
-      }
-    } catch (error) {
-      console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
-      if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+    // var logAction = 'Профиль дома';
+    // console.log('props: ', this.props)
+    // console.log(' props.params: ', this.props.navigation.state.params)
+    // try {
+    //   const { userLogin, token } = store.state;
+    //   var doctor: Doctor = this.props.navigation.state.params
+    //   if (token && (userLogin.enum_Role != Role.user || userLogin.id == doctor.id)) {
+    //     const response = await fetch(serverUrl + 'doctor/' + doctor.id,
+    //       { headers: { 'Authorization': `Bearer ${token}` } })
+    //     const data: HomeData = await response.json()
+    //     if (response.status == 200) {
+    //       this.setState({
+    //         data: data.homeData, approvedTentants: data.tantains,
+    //         newTenants: data.newTantains, load: true
+    //       })
+    //       console.log('Успех fetch ' + logAction, data)
+    //     }
+    //     else if (response.status == 404) {
+    //       console.log('Внимание', 'Доктор не найден id=' + doctor.id);
+    //       this.setState({ loadError: true })
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
+    //   if (error == 'TypeError: Network request failed') {
+    //     Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
 
-        this.setState({ loadError: true })
-      }
-      else if (error.status == 404) {
-        console.log('Внимание', 'Дом не найден: ' + error, [{ text: 'OK' }]);
-      }
-      else {
-        Alert.alert('Внимание', 'Ошибка сервера: ' + error, [{ text: 'OK' }]);
-      }
-      this.setState({ loadError: true })
-      return
-    }
+    //     this.setState({ loadError: true })
+    //   }
+    //   else if (error.status == 404) {
+    //     console.log('Внимание', 'Дом не найден: ' + error, [{ text: 'OK' }]);
+    //   }
+    //   else {
+    //     Alert.alert('Внимание', 'Ошибка сервера: ' + error, [{ text: 'OK' }]);
+    //   }
+    //   this.setState({ loadError: true })
+    //   return
+    // }
   }
   render() {
     const { userLogin, token } = store.state;
     const { navigation } = this.props
     var propsData = this.props.navigation.state.params
-    const { id, photo, user, speciality, enum_Category, placeOfWork, floors, porches, fk_Status,
-      yearCommissioning, fk_Manager, manager } = propsData
-    const { data, load, approvedTentants, newTenants, refreshing } = this.state
+    const { id, photo, user, speciality, enum_Category, placeOfWork } = propsData
+    const { data, load, approvedTentants, newTenants, refreshing, rating } = this.state
     //const { localGroups } = data
-    const { images, h1, sub, link, indicator } = globalStyles
+    const { images, h1, sub, link, indicator, mrgTop } = globalStyles
     const { status, h2, h3, sectionContainer, sectionTitle, sectionContainer1, sectionTitle1,
       homeStatusGood, homeStatusBad, top } = locStyles
     const backArrow = 'arrow-back'
@@ -83,9 +86,6 @@ class DoctorProfile extends PureComponent<any, State, Props> {
         leftIcon={backArrow}
         onPressLeft={() => navigation.goBack()} />
 
-      <View>
-        {Background}
-      </View>
       <View>
         <ScrollView
           refreshControl={
@@ -97,41 +97,35 @@ class DoctorProfile extends PureComponent<any, State, Props> {
             <Text style={h1}>{user.fullName}</Text>
             <Text style={h2}>{speciality.nameSpeciality}</Text>
           </View>
-          {token ? (
-            load ? (<View>
-              <View style={sub}>
-                <Text style={h1}>Поставить оценку:</Text>
-                <TouchableOpacity
-                  onPress={() => (approvedTentants.length || newTenants.length) &&
-                    navigation.navigate()
-                  } >
-                  <View style={sectionContainer1}>
-                    <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
+          {/* {token ? (
+            load ? (<View> */}
+          <View style={mrgTop}>
+            <Text style={h3}>Поставить оценку:</Text>
 
-              <TouchableOpacity onPress={() => navigation.navigate()} >
-                <View style={sectionContainer}>
-                  <Text style={sectionTitle}>Добавить группу</Text>
-                </View>
-              </TouchableOpacity>
+            <AirbnbRating
+              showRating
+              reviews={ratingArr}
+              defaultRating={0}
+            />
+
+<View style={[sub,{marginLeft: w*0.2}]}>
+            <Rating
+              ratingCount={5}
+              showRating
+              readonly={false}
+              onFinishRating={this.ratingCompleted.bind(this)}
+              fractions={1} 
+              startingValue={rating}
+            />
+            <Text style={[h1,{ marginTop: 50}]}>(150)</Text>
             </View>
-            ) : <ActivityIndicator style={[indicator, { marginTop: h / 2 }]} size={50} color={ColorApp} />
+          </View>
+
+          {/* </View>
+            ) : <ActivityIndicator style={[indicator, { marginTop: h / 2 }]} size={50} color={IndicatorApp} />
           ) : <View></View>
-          }
+          }          */}
 
-          <Divider />
-          {token ?
-            <View style={sub}>
-              <Text style={h3}>Управляющий дома: </Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate(PROFILE, fk_Manager)}>
-                <Text style={link}> {manager.fullName}</Text>
-              </TouchableOpacity>
-            </View>
-            : <View></View>
-          }
           <Text style={h3}>Категория:
           <Text style={{ color: 'black' }}> {enum_Category == 1 ? Category.first : enum_Category == 2 ?
               Category.second : Category.higher}</Text> </Text>
@@ -143,6 +137,11 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     </View>
     );
   }
+
+  private ratingCompleted(rating: number) {
+    this.setState({rating})
+  }
+
   private async onRefresh() {
     this.setClearState();
     this.componentDidMount();

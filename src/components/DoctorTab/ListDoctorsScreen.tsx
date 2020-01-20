@@ -3,7 +3,7 @@ import {
   View,Text, ScrollView, ActivityIndicator, Image, Alert, RefreshControl } from 'react-native';
 import { Header, DoctorCard,  globalStyles } from '..';
 import {  DOCTORProfile } from '../../routes';
-import { ColorApp, serverUrl, Background } from '../../constants';
+import { ColorApp, serverUrl, Background, IndicatorApp } from '../../constants';
 import { Doctor } from '../../interfaces'
 
 interface State {
@@ -81,7 +81,7 @@ class ListDoctorsScreen extends React.PureComponent<any, State> {
           </View> 
           :
           !loadError &&
-          <ActivityIndicator style={indicator} size={50} color={ColorApp} />
+          <ActivityIndicator style={indicator} size={50} color={IndicatorApp} />
         }
         <View style={{margin: 50}}><Text></Text></View>
       </ScrollView>
