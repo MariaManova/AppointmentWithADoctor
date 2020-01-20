@@ -100,7 +100,7 @@ $ npm i --save react-native-elements
 $ npm i --save react-native-paper
 ```
 
-6. Добавить библиотеку lля сохранения глобального состояния:
+6. Добавить библиотеку для сохранения глобального состояния:
 ```bash
 $ npm i --save use-global-hook-ts
 ```
