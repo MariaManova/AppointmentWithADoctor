@@ -30,6 +30,8 @@ export interface Doctor {
   speciality: Speciality,
   placeOfWork: PlaceOfWork,
   user: User,
+  totalSumRating: number,
+  numRated: number
 }
 
 export interface Appointment {
@@ -56,6 +58,12 @@ export interface Patient {
   Fk_User: number,
   myAppointments: Appointment[],  
   user: User
+}
+export interface Appreciated {
+  id: number,
+  fk_Doctor: number,
+  Fk_User: number,
+  assessment: number,
 }
 
 export interface AuthData {
@@ -187,6 +195,8 @@ export const InitialDoctor: Doctor = {
   speciality: InitSpeciality,
   placeOfWork: InitPlaceOfWork,
   user: initialUser,
+  totalSumRating: 0,
+  numRated: 0
 }
 // export const initArrBool: arrBool = {
 //   email: false,
