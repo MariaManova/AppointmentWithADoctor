@@ -151,6 +151,17 @@ const globalStyles = StyleSheet.create({
     height: 20,
     marginLeft: 20,
   },
+  buttonWG: {
+    width: w*0.90,
+    height: 45,
+    alignSelf: 'center',
+  },  
+  buttonWM: {
+    marginTop: 10,
+    width: w * 0.85,
+    height: 40,
+    alignSelf: 'center',
+  },
   button: {
     marginTop: 20,
     borderRadius: 10,
