@@ -4,8 +4,8 @@ import { Dimensions, Image, View, StyleSheet } from 'react-native'
 const win = Dimensions.get('window')
 export const h = win.height;
 export const w = win.width;
-export const ColorApp = '#000099'
-export const IndicatorApp = '#000099'
+export const ColorApp = '#009'
+export const IndicatorApp = '#009'
 export const colorError='#a00'
 export const BackgroundColor = 'lightsteelblue'
 export const NoFoto = "https://i.ibb.co/wNtDpNt/NoFoto.png"
