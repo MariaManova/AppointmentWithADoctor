@@ -34,7 +34,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       good, disBtn, refreshing, visibility } = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, inputPaperFree } = locStyles
-    const { im, cardStyle, indicator, error, inputStyle, link,textInputPaper, inputPaper } = globalStyles
+    const { im, cardStyle, indicator, error, inputStyle, link,buttonContenSp, inputPaper } = globalStyles
     const backArrow = 'arrow-back';
     return (
       <View style={{ height: h }}>
@@ -95,13 +95,16 @@ class AuthScreen extends PureComponent<any, State, Props> {
             
             <View style={{ alignItems: "center", marginTop: 20 }}>
             <View style={button}>
-              <TouchableOpacity
+              <Button
+                mode="contained"
+                uppercase={false}
                 onPress={this.onSubmit.bind(this)}
-                disabled={disBtn}>
-                <View style={buttonContainer}>
-                  <Text style={buttonTitle}>Войти</Text>
-                </View>
-              </TouchableOpacity>
+                disabled={disBtn}
+                contentStyle={buttonContenSp}
+                style={buttonContainer}
+                labelStyle={buttonTitle}>
+                  Войти
+              </Button>
             </View>
           </View>
 
@@ -109,7 +112,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
           <TouchableOpacity
             onPress={() => navigation.navigate(REGISTRATION)}
             disabled={submit} >
-            <Text style={[link, { marginTop: -20 }]}>{'Зарегистрируйтесь'}</Text>
+            <Text style={[link, { marginTop: -20 }]}>{'Зарегистрироваться'}</Text>
           </TouchableOpacity>
           </Card>
 
@@ -356,7 +359,7 @@ const locStyles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    width: 250,
+    width: w*0.75,
   },
   buttonContainer: {
     backgroundColor: ColorApp,
