@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert,
-  ActivityIndicator,  RefreshControl
+  ActivityIndicator, RefreshControl
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { h, w, ColorApp, serverUrl, Background, IndicatorApp, colorError, BackgroundColor } from '../../constants'
@@ -60,31 +60,31 @@ class RegistrationScreen extends Component<any, State, Props> {
 
   onSearchCity = (text: string) => {
     var cityList = this.state.cityListAll;
-    if(text){
+    if (text) {
       var filtered = cityList.filter((el) =>
-      el.value.toLowerCase().indexOf(text.toLowerCase()) > -1
-        );     
+        el.value.toLowerCase().indexOf(text.toLowerCase()) > -1
+      );
       this.setState({ cityList: filtered });
-      }
-      else this.setState({ cityList });
+    }
+    else this.setState({ cityList });
   }
   onSearchStreet = (text: string) => {
     var vladimirStreetList = this.state.vladimirStreetListAll;
-    if(text){
+    if (text) {
       var filtered = vladimirStreetList.filter((el) =>
-      el.value.toLowerCase().indexOf(text.toLowerCase()) > -1);     
+        el.value.toLowerCase().indexOf(text.toLowerCase()) > -1);
       this.setState({ vladimirStreetList: filtered });
-      }
-      else this.setState({ vladimirStreetList });
+    }
+    else this.setState({ vladimirStreetList });
   }
 
   render() {
     const { email, name, address, password, repeatPassword, visibility, visibleModal,
       badEnter, errorText, colorField, submit, width, disBtn, refreshing } = this.state
     const { navigation } = this.props
-    const { fixToText, fixToTextElem, icon, textInput,  input, button, buttonContainer, buttonTitle,
+    const { fixToText, fixToTextElem, icon, textInput, input, buttonContainer, buttonTitle,
       indicator, link, error, paddingBottom } = locStyles
-    const { im, cardStyle, inputStyle, textInputPaper, inputPaper, inputMultiPaper, } = globalStyles
+    const { im, cardStyle, inputStyle, textInputPaper, inputPaper, inputMultiPaper, buttonWM } = globalStyles
     const backArrow = 'arrow-back';
     return (
       <View style={{ height: h }}>
@@ -103,7 +103,7 @@ class RegistrationScreen extends Component<any, State, Props> {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
           }>
-          <Card containerStyle={cardStyle} >            
+          <Card containerStyle={cardStyle} >
             <View style={fixToText}>
               <View style={textInputPaper}>
                 <TextInput
@@ -202,13 +202,14 @@ class RegistrationScreen extends Component<any, State, Props> {
               </View>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <View style={button}>
+              <View style={buttonWM}>
                 <Button
+                  mode="contained"
+                  uppercase={false}
                   onPress={this.onSubmit.bind(this)}
-                  disabled={disBtn} 
+                  disabled={disBtn}
                   contentStyle={buttonContainer}
-                  labelStyle={buttonTitle}
-                  uppercase={false}>Регистрация</Button>
+                  labelStyle={buttonTitle}>Регистрация</Button>
               </View>
             </View>
           </Card>
@@ -216,32 +217,33 @@ class RegistrationScreen extends Component<any, State, Props> {
           <View style={{ margin: 90 }}><Text> </Text></View>
         </ScrollView>
         {submit && <Provider>
-              <Portal>
-                <Modal visible={submit} >
-                  <ActivityIndicator style={indicator} size={70} color={IndicatorApp} />
-                </Modal>
-              </Portal>
-            </Provider>}
+          <Portal>
+            <Modal visible={submit} >
+              <ActivityIndicator style={indicator} size={70} color={IndicatorApp} />
+            </Modal>
+          </Portal>
+        </Provider>}
         {this.onModal()}
       </View>
     );
   }
 
   private onModal() {
-    const { visibleModal, city, street, homeN, submit, badEnter, colorField, 
+    const { visibleModal, city, street, homeN, submit, badEnter, colorField,
       errorText, disBtnModal, cityList, vladimirStreetList } = this.state
-    const { cardStyle, inputStyle, contStyle, dropdownStyle, textInputPaper, inputMultiline, inputPaper } = globalStyles
-    const { fixToText,  textInput, buttonContainer, buttonTitle, error, button } = locStyles
+    const { cardStyle, inputStyle, contStyle, dropdownStyle, textInputPaper, 
+      inputMultiline, inputPaper, buttonWM } = globalStyles
+    const { fixToText, textInput, buttonContainer, buttonTitle, error } = locStyles
     return (
       <Provider>
         <Portal>
           <Modal visible={visibleModal} onDismiss={this._hideModal}
-          contentContainerStyle={{position: 'absolute', top: 100, left: 0, right: 0}}>
+            contentContainerStyle={{ position: 'absolute', top: 100, left: 0, right: 0 }}>
             <Card containerStyle={cardStyle} >
               <View style={fixToText}>
                 <View style={textInputPaper}>
                   <TextInput
-                    style={[inputPaper, inputStyle, {width: w*0.83}]}
+                    style={[inputPaper, inputStyle, { width: w * 0.83 }]}
                     mode='outlined'
                     onChangeText={this.onChangeCity.bind(this)}
                     label='Город *'
@@ -256,7 +258,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                     onChangeText={this.onChangeCity.bind(this)}
                     value={city}
                     containerStyle={[contStyle, { marginTop: -66, width: 30, alignSelf: 'flex-end' }]}
-                    pickerStyle={[dropdownStyle, inputMultiline, { width: w*0.8, marginLeft: -w * 0.75, height: 300 }]}
+                    pickerStyle={[dropdownStyle, inputMultiline, { width: w * 0.8, marginLeft: -w * 0.75, height: 300 }]}
                     dropdownPosition={0}
                     disabled={submit}
                   />
@@ -266,7 +268,7 @@ class RegistrationScreen extends Component<any, State, Props> {
               <View style={fixToText}>
                 <View style={textInputPaper}>
                   <TextInput
-                    style={[inputPaper, inputStyle, {width: w*0.83}]}
+                    style={[inputPaper, inputStyle, { width: w * 0.83 }]}
                     mode='outlined'
                     onChangeText={this.onChangeStreet.bind(this)}
                     label='Улица *'
@@ -281,7 +283,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                     onChangeText={this.onChangeStreet.bind(this)}
                     value={street}
                     containerStyle={[contStyle, { marginTop: -66, width: 30, alignSelf: 'flex-end' }]}
-                    pickerStyle={[dropdownStyle, inputMultiline, { width: w*0.8, marginLeft: -w * 0.75, height: 300 }]}
+                    pickerStyle={[dropdownStyle, inputMultiline, { width: w * 0.8, marginLeft: -w * 0.75, height: 300 }]}
                     dropdownPosition={0}
                     disabled={submit}
                   />
@@ -291,7 +293,7 @@ class RegistrationScreen extends Component<any, State, Props> {
               <View style={fixToText}>
                 <View style={textInput}>
                   <TextInput
-                    style={[inputPaper, inputStyle, {width: w*0.88}]}
+                    style={[inputPaper, inputStyle, { width: w * 0.88 }]}
                     mode='outlined'
                     onChangeText={this.onChangeHomeN.bind(this)}
                     label='Номер дома *'
@@ -304,14 +306,15 @@ class RegistrationScreen extends Component<any, State, Props> {
                   {badEnter.homeN && <Text style={error}>{errorText.homeN}</Text>}
                 </View>
               </View>
-              <View style={button}>
+              <View style={buttonWM}>
                 <Button
+                  mode="contained"
+                  uppercase={false}
                   onPress={this._hideModal.bind(this)}
-                  disabled={disBtnModal} 
+                  disabled={disBtnModal}
                   style={buttonContainer}
-                  labelStyle={buttonTitle}
-                  uppercase={false}>Подтвердить</Button>
-                  </View>
+                  labelStyle={buttonTitle}>Подтвердить</Button>
+              </View>
             </Card>
           </Modal>
         </Portal >
@@ -325,7 +328,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   private onChangeCity(city: string) {
     this.onSearchCity(city)
     var { badEnter, errorText, colorField, street, homeN } = this.state
-    var address = 'г. '+city+' ул. '+street+' д. '+homeN
+    var address = 'г. ' + city + ', ' + street + ' д. ' + homeN
     if (city == ' ') { return }
     if (!city) {
       badEnter.city = true;
@@ -337,14 +340,14 @@ class RegistrationScreen extends Component<any, State, Props> {
     else {
       badEnter.city = false;
       colorField.city = 'green'
-      this.setState({ address,city, colorField, badEnter });
+      this.setState({ address, city, colorField, badEnter });
       this.checkFieldsModal(city, street, homeN);
     }
   }
   private onChangeStreet(street: string) {
     this.onSearchStreet(street)
     var { badEnter, errorText, colorField, city, homeN } = this.state
-    var address = 'г. '+city+' ул. '+street+' д. '+homeN
+    var address = 'г. ' + city + ', ' + street + ' д. ' + homeN
     if (street == ' ') { return }
     if (!street) {
       badEnter.street = true;
@@ -362,7 +365,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
   private onChangeHomeN(homeN: string) {
     var { badEnter, errorText, colorField, city, street } = this.state
-    var address = 'г. '+city+' ул. '+street+' д. '+homeN
+    var address = 'г. ' + city + ', ' + street + ' д. ' + homeN
     if (homeN == ' ') { return }
     if (!homeN) {
       badEnter.homeN = true;
@@ -374,13 +377,13 @@ class RegistrationScreen extends Component<any, State, Props> {
     else {
       badEnter.homeN = false;
       colorField.homeN = 'green'
-      this.setState({address, homeN, badEnter });
+      this.setState({ address, homeN, badEnter });
       this.checkFieldsModal(city, street, homeN);
     }
   }
 
   private checkFieldsModal(city: string, street: string, homeN: string) {
-    const {  badEnter } = this.state
+    const { badEnter } = this.state
     if (city && street && homeN && !badEnter.city && !badEnter.street && !badEnter.homeN) {
       badEnter.address = false
       this.setState({ disBtnModal: false, badEnter })
@@ -391,7 +394,7 @@ class RegistrationScreen extends Component<any, State, Props> {
     if (email && name && address && password && repeatPassword &&
       !badEnter.email && !badEnter.name && !badEnter.address && !badEnter.password &&
       !badEnter.repeatPassword) {
-        
+
       this.setState({ disBtn: false })
     }
   }
@@ -577,7 +580,7 @@ class RegistrationScreen extends Component<any, State, Props> {
 
   private onSubmit() {
     const { email, name, address, password, repeatPassword, badEnter, errorText,
-      colorField, good } = this.state
+      colorField, good, city, street, homeN } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
@@ -614,6 +617,17 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
     if (!email || !name || !address || !password || !repeatPassword) {
       Alert.alert('Внимание', 'Не все поля заполнены',
+        [{ text: 'OK' }],
+        { cancelable: false },
+      );
+      this.setState({ disBtn: true });
+      return;
+    }
+    if (!city || !street || !homeN || badEnter.city || badEnter.street || badEnter.homeN) {      
+      badEnter.address = true;
+      errorText.address = 'Адрес заполнен неверно'
+      colorField.address = colorError
+      Alert.alert('Внимание', 'Адрес заполнен неверно',
         [{ text: 'OK' }],
         { cancelable: false },
       );
@@ -677,7 +691,7 @@ class RegistrationScreen extends Component<any, State, Props> {
           console.log(response);
           Alert.alert('Вы зарегистрированы!', 'Пожалуйста, войдите в систему используя свой логин и пароль',
             [{ text: 'OK' }]);
-            $this.setState({ submit: false, disBtn: false });
+          $this.setState({ submit: false, disBtn: false });
           return response.json();
         }
         else if (response.status == 500) {
@@ -786,11 +800,6 @@ const locStyles = StyleSheet.create({
     marginBottom: 3,
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  button: {
-    marginTop: 20,
-    width: w*0.85,
-    height: 40,
   },
   buttonContainer: {
     backgroundColor: ColorApp,
