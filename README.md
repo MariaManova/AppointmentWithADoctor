@@ -104,3 +104,10 @@ $ npm i --save react-native-paper
 ```bash
 $ npm i --save use-global-hook-ts
 ```
+
+7. Добавить компонент DateTimePicker:
+```bash
+npm install @react-native-community/datetimepicker --save
+or
+yarn add @react-native-community/datetimepicker
+```
