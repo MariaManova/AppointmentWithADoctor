@@ -4,13 +4,13 @@ import { User, Patient, initialUser } from '../interfaces'
 
 interface IAppState {
     token: string,
-    data: Patient,
+    patient: Patient,
     userLogin: User,
 }
 
 const initialState: IAppState = {
     token: '',
-    data: {        
+    patient: {        
         id: 0,
         address: '',
         Fk_User: 0,
@@ -35,8 +35,8 @@ export const { useGlobal, store } = useGlobalHook(React, initialState,
     });
 
 export const actions = {
-    Login: (token: string, data: Patient, userLogin: User) => {
-        const newState = { token, data, userLogin }
+    Login: (token: string, patient: Patient, userLogin: User) => {
+        const newState = { token, patient, userLogin }
         store.setState(newState)
     }
 }

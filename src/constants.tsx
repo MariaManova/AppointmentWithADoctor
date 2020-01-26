@@ -11,7 +11,10 @@ export const BackgroundColor = 'lightsteelblue'
 export const NoFoto = "https://i.ibb.co/wNtDpNt/NoFoto.png"
 export const NoAvatar = "https://i.ibb.co/jL1RZKp/noAvatar.png"
 export const keyPictures = "5e51bf9a518e70502062b1b4a9339b70"
-export const serverUrl = 'http://192.168.43.80:5000/api/'
+export const serverUrl = 'http://192.168.43.224:5000/api/'
+export const months = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа',
+    'сентября', 'октября', 'ноября', 'декабря']
 
 const styles = StyleSheet.create({
     im: {
