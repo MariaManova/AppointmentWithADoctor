@@ -32,8 +32,8 @@ class ProfileScreen extends React.Component<any, State> {
     this.setState({ loadError: false })
     var logAction = 'Профиль пользователя';
     try {
-      const { userLogin, data, token } = store.state;
-      var id = data.id;
+      const { userLogin, patient, token } = store.state;
+      var id = patient.id;
       var param = this.props.navigation.state.params
       if (param) id = param;
       if (token) {
@@ -59,7 +59,7 @@ class ProfileScreen extends React.Component<any, State> {
     } catch (error) {
       console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
         this.setState({ loadError: true })
       }
@@ -135,8 +135,8 @@ class ProfileScreen extends React.Component<any, State> {
           </View>
         </TouchableOpacity>
         <View style={{ margin: 10 }}></View>
-        <Text style={h3}>Телефон:  {phone} </Text>
-        <Text style={h3}>Пол:  {enum_Gender == 1 ? Gender.male : enum_Gender == 2 && Gender.female} </Text>
+        {phone && <Text style={h3}>Телефон:  {phone} </Text>}
+        {enum_Gender && <Text style={h3}>Пол:  {enum_Gender == 1 ? Gender.male : enum_Gender == 2 && Gender.female} </Text>}
 
         <View style={{ margin: 55 }}><Text> </Text></View>
       </ScrollView>

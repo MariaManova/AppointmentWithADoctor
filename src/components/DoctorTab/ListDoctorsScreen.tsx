@@ -34,7 +34,7 @@ class ListDoctorsScreen extends React.PureComponent<any, State> {
     } catch (error) {
       console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
         
       this.setState({ loadError: true })
       }
@@ -56,7 +56,7 @@ class ListDoctorsScreen extends React.PureComponent<any, State> {
 
   render() {
     const { data, load, visibleSearch, refreshing, loadError } = this.state
-    const { background, container, indicator, im } = globalStyles
+    const { indicator, im } = globalStyles
     const { navigation } = this.props
     const menu = 'menu'
     return (<View>

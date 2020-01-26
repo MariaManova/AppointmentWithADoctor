@@ -305,7 +305,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       .catch(error => {
         console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
         if (error == 'TypeError: Network request failed') {
-          Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+          Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
         }
         else {
           Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
