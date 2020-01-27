@@ -42,7 +42,7 @@
     ```
 5. Скачиваем и устанавливаем Visual Studio Code;
     * Проверьте, что в «переменных среды» установился в переменную Path путь: C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code\bin
-6. Клонирование проекта из Git или создание нового проекта:
+6. Клонирование проекта из Git:
     * Клонируйте проект по ссылке: 
         ```bash
         $ git clone https://github.com/MariaManova/AppointmentWithADoctor.git
