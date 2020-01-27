@@ -37,6 +37,7 @@ interface State {
   visibleModal: boolean,
   date: Date,
   time: Date[], //список доступного времени записи
+  timeAll: Date[], //весь список доступного времени записи
   timeToday: Date[], //список доступного времени записи сегодня
   dateStr: string, //строка отображения даты
   timeAppt: Date, //время записи на прием
@@ -78,7 +79,7 @@ class DoctorProfile extends PureComponent<any, State, Props> {
   state = {
     data: InitialDoctor, load: true, loadError: false, refreshing: false,
     appreciated: {}, rating: 0, newRating: 0, estimate: false, myRef: React.createRef(),
-    confirmRating: false, numRated: 0, visibleModal: false, date: t, time: time.slice(), timeToday: timeToday.slice(), dateStr: '',
+    confirmRating: false, numRated: 0, visibleModal: false, date: t, time: [], timeAll: time.slice(), timeToday: timeToday.slice(), dateStr: '',
     show: false, disBtn: false, submit: false, confirmAppointment: false, timeAppt: null,
     badEnter: {
       date: false,
@@ -406,7 +407,8 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     var logAction = 'Занятое время приема';
     const { userLogin, patient, token } = store.state;
     const doctor: Doctor = this.props.navigation.state.params
-    const { pageSize } = this.state
+    const { pageSize, timeAll, timeToday } = this.state
+    var times: Date[] = []
     console.log('date: ', date);
     this.setState({ loadError: false })
     try {
@@ -420,12 +422,19 @@ class DoctorProfile extends PureComponent<any, State, Props> {
 
       if (response.status == 200) {
         var appointments: string[] = [], arr: Date[] = [];
+        var dn = new Date()
         data.appointments.forEach((el: Appointment) => {
           var dt = new Date(el.dateTimeReceipt)
           var dataTime = new Date(dt.setHours((dt.getHours() + 1), dt.getMinutes(), 0, 0))
           appointments.push(dataTime.toLocaleTimeString())
         });
-        time.forEach((el, id) => {
+        if (date.toLocaleDateString() == dn.toLocaleDateString()) {
+          times = timeToday.slice();
+        }
+        else {
+          times = timeAll.slice();
+        }
+        times.forEach((el, id) => {
           var ind = appointments.indexOf(el.toLocaleTimeString());
           if (ind != -1) {
             appointments.splice(ind, 1);
@@ -496,11 +505,11 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     var d = new Date(date.nativeEvent.timestamp);
     d = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 3, 0, 0, 0)
     console.log('date now: ', dn)
-    if (d.toLocaleDateString() == dn.toLocaleDateString()) {
+    if (d.toLocaleDateString() == dn.toLocaleDateString() && dn > endOfWorkingDay) {
       badEnter.date = true;
       errorText.date = 'На сегодня больше записываться нельзя!'
     }
-    else if (d < dn) {
+    else if (d.toLocaleDateString() < dn.toLocaleDateString()) {
       badEnter.date = true;
       errorText.date = 'Дата не может быть меньше текущей!'
     }
