@@ -131,13 +131,6 @@ class ProfileScreen extends React.Component<any, State> {
           <Text style={h1}>{fullName}</Text>
           <Text style={h2}>{address}</Text>
         </View>
-        {/* <TouchableOpacity onPress={() => appointments.length && this._showModal()}>
-          <View style={[sectionContainer1, sub]}>
-            <Text style={sectionTitle1}>Текущие записи    {appointments.length ? appointments.length : 0}</Text>
-            <View style={{ width: w * 0.1 }}></View>
-            <Icon name="expand-more" color='white' />
-          </View>
-        </TouchableOpacity> */}
      {this.myAppointments()}
         <View style={{ margin: 50 }}></View>
         {/* <Text style={h3}>Телефон:  {phone && phone} </Text>
@@ -146,34 +139,6 @@ class ProfileScreen extends React.Component<any, State> {
       </ScrollView>
     )
   }
-  // private onModal() {
-  //   const { visibleModal, data } = this.state
-  //   const { cardStyle, label2 } = globalStyles
-  //   const { navigation } = this.props
-  //   return (
-  //     <Provider>
-  //       <Portal>
-  //         <Modal visible={visibleModal} onDismiss={this._hideModal.bind(this)}
-  //           contentContainerStyle={{ position: 'absolute', top: 50, left: 0, right: 0 }}>
-  //           <Card containerStyle={cardStyle} >
-  //           <Text style={[label2,{marginBottom: 10}]}>Текущие записи:</Text>
-  //           {data.appointments.map((item: Appointment, id) => {
-  //             return <AppointmentCard data={item} key={id} 
-  //             onPress={() => navigation.navigate(DOCTORProfile, (item.doctor))}/>
-  //           })}
-  //           </Card>
-  //         </Modal>
-  //       </Portal >
-  //     </Provider >
-  //   )
-  // }
-
-  // _showModal() {    
-  //   this.setState({ visibleModal: !this.state.visibleModal });
-  // }
-  // _hideModal() {
-  //   this.setState({ visibleModal: false });
-  // }
 
   private myAppointments() {
     const { images, sectionContainer1, sectionTitle1, h2, h3, top } = locStyles
