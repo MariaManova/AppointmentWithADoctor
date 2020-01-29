@@ -149,6 +149,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   //onChangeText={this.onChangeAddress.bind(this)}
                   label='Адрес'
                   onFocus={this._showModal.bind(this)}
+                  onTouchStart={this._showModal.bind(this)}
                   value={address}
                   onEndEditing={() => this.onCheckAddress(address)}
                   editable={!submit}
