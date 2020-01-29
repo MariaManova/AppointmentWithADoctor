@@ -1,32 +1,32 @@
 import React, { useEffect } from 'react';
 import {
   StatusBar, View, StyleSheet, Text, ScrollView, Image, TouchableOpacity, ActivityIndicator,
-  SafeAreaView,
-  RefreshControl,
-  Alert
+  SafeAreaView, RefreshControl, Alert
 } from 'react-native';
-import { Header, globalStyles } from '..';
+import { Header, globalStyles, AppointmentCard } from '..';
 import { useGlobal, store, actions } from '../../store'
-import { User, initialUser, Patient } from '../../interfaces'
+import { Patient, initPatient, Appointment } from '../../interfaces'
 import { h, w, ColorApp, serverUrl, Background, NoAvatar } from '../../constants'
 import { Gender } from '../../enum/Enums';
-import { AUTH, REGISTRATION, } from '../../routes';
 import { Card, Icon } from 'react-native-elements'
-
+import { Button, Provider, Portal, Modal, TextInput, } from 'react-native-paper';
+import { DOCTORProfile } from '../../routes';
 
 interface State {
-  data: User,
   patient: Patient,
+  appointments: Appointment[],
   load: boolean,
   refreshing: boolean,
-  loadError: boolean
+  loadError: boolean,
+  visibleModal: boolean,
+}
+interface ProfileData {  
+  patient: Patient,
+  appointments: Appointment[],
 }
 
 class ProfileScreen extends React.Component<any, State> {
-  state = {
-    data: initialUser, load: false, refreshing: false, loadError: false,
-    patient: { id: 0, address: '', Fk_User: 0, myAppointments: [], user: initialUser }
-  };
+  state = { patient: initPatient, appointments: [], load: false, refreshing: false, loadError: false, visibleModal: false };
 
   componentDidMount = async () => {
     this.setState({ loadError: false })
@@ -45,14 +45,14 @@ class ProfileScreen extends React.Component<any, State> {
               'Authorization': `Bearer ${token}`
             }
           })
-        const data = await response.json()
+        const data: ProfileData = await response.json()
         if (response.status == 200) {
-          this.setState({ data: data.user, patient: data.patient, load: true })
-          !param && actions.Login(token, data.patient, data.user)
-          console.log('Успех fetch ' + logAction, data)
+          this.setState({ patient: data.patient, appointments: data.appointments, load: true })
+          !param && actions.Login(token, data.patient, data.patient.user)
+          console.log('Успех fetch ' + logAction, 'patient: '+data.patient+', appointments: '+data.appointments)
         }
         else if (response.status == 404) {
-          console.log('Внимание', 'Пользователь не найден id=' + data.id);
+          console.log('Внимание', 'Пользователь не найден id=' + data.patient.id);
           this.setState({ loadError: true })
         }
       }
@@ -77,7 +77,7 @@ class ProfileScreen extends React.Component<any, State> {
   render() {
     const { navigation } = this.props
     const { indicator, im, scrollView } = globalStyles
-    var { data, load, refreshing, loadError } = this.state
+    var { load, refreshing, loadError } = this.state
     var { userLogin, token } = store.state;
     return (
       <View >
@@ -107,11 +107,11 @@ class ProfileScreen extends React.Component<any, State> {
 
   private ProfileData() {
     const { navigation } = this.props
-    const { noImages, h1, sub } = globalStyles
+    const { buttonContainerSp, mrgTop, buttonWG, buttonTitle, h1, sub } = globalStyles
     const { images, sectionContainer1, sectionTitle1, h2, h3, top } = locStyles
-    var { data, patient, refreshing } = this.state
-    var { address, myAppointments } = patient
-    var { phone, enum_Gender, fullName, photo, id } = data
+    var { patient, appointments, refreshing } = this.state
+    var { address  } = patient
+    var { phone, enum_Gender, fullName, photo, id } = patient.user
     return (
       <ScrollView
         refreshControl={
@@ -127,27 +127,54 @@ class ProfileScreen extends React.Component<any, State> {
           <Text style={h1}>{fullName}</Text>
           <Text style={h2}>{address}</Text>
         </View>
-        <TouchableOpacity onPress={() => myAppointments.length && navigation.navigate()} >
+        <TouchableOpacity onPress={() => appointments.length && this._showModal()}>
           <View style={[sectionContainer1, sub]}>
-            <Text style={sectionTitle1}>Текущие записи    {myAppointments.length ? myAppointments.length : 0}</Text>
-            <View style={{ width: w*0.1 }}></View>
-            <Icon name="expand-more" />
+            <Text style={sectionTitle1}>Текущие записи    {appointments.length ? appointments.length : 0}</Text>
+            <View style={{ width: w * 0.1 }}></View>
+            <Icon name="expand-more" color='white' />
           </View>
         </TouchableOpacity>
         <View style={{ margin: 10 }}></View>
-        {phone && <Text style={h3}>Телефон:  {phone} </Text>}
-        {enum_Gender && <Text style={h3}>Пол:  {enum_Gender == 1 ? Gender.male : enum_Gender == 2 && Gender.female} </Text>}
-
-        <View style={{ margin: 55 }}><Text> </Text></View>
+        <Text style={h3}>Телефон:  {phone && phone} </Text>
+        <Text style={h3}>Пол:  {enum_Gender && enum_Gender == 1 ? Gender.male : enum_Gender == 2 && Gender.female} </Text>
+        {this.onModal()}
+        <View style={{ margin: 255 }}><Text> </Text></View>
       </ScrollView>
     )
+  }
+  private onModal() {
+    const { visibleModal, appointments } = this.state
+    const { cardStyle, label2 } = globalStyles
+    const { navigation } = this.props
+    return (
+      <Provider>
+        <Portal>
+          <Modal visible={visibleModal} onDismiss={this._hideModal.bind(this)}
+            contentContainerStyle={{ position: 'absolute', top: 50, left: 0, right: 0 }}>
+            <Card containerStyle={cardStyle} >
+            <Text style={[label2,{marginBottom: 10}]}>Текущие записи:</Text>
+            {appointments.map((item, id) => {
+              return <AppointmentCard data={item} key={id} />
+            })}
+            </Card>
+          </Modal>
+        </Portal >
+      </Provider >
+    )
+  }
+
+  _showModal() {
+    this.setState({ visibleModal: true });
+  }
+  _hideModal() {
+    this.setState({ visibleModal: false });
   }
   private async onRefresh() {
     this.setClearState();
     this.componentDidMount();
   }
   private setClearState() {
-    this.setState({ data: initialUser, load: false })
+    this.setState({ patient: initPatient, load: false, refreshing: false, loadError: false, })
   }
 }
 
@@ -164,7 +191,8 @@ const locStyles = StyleSheet.create({
   },
   sectionTitle1: {
     fontSize: 18,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: '#fff'
   },
   h2: {
     fontSize: 18,
