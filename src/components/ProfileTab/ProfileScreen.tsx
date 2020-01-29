@@ -9,12 +9,11 @@ import { Patient, initPatient, Appointment } from '../../interfaces'
 import { h, w, ColorApp, serverUrl, Background, NoAvatar } from '../../constants'
 import { Gender } from '../../enum/Enums';
 import { Card, Icon } from 'react-native-elements'
-import { Button, Provider, Portal, Modal, TextInput, } from 'react-native-paper';
+import { Button, Provider, Portal, Modal, TextInput, List, } from 'react-native-paper';
 import { DOCTORProfile } from '../../routes';
 
 interface State {
-  patient: Patient,
-  appointments: Appointment[],
+  data: ProfileData,
   load: boolean,
   refreshing: boolean,
   loadError: boolean,
@@ -23,10 +22,14 @@ interface State {
 interface ProfileData {  
   patient: Patient,
   appointments: Appointment[],
+  history: Appointment[],
+}
+var data: ProfileData = {
+  patient: initPatient, appointments: [], history: []
 }
 
 class ProfileScreen extends React.Component<any, State> {
-  state = { patient: initPatient, appointments: [], load: false, refreshing: false, loadError: false, visibleModal: false };
+  state = { data, load: false, refreshing: false, loadError: false, visibleModal: false };
 
   componentDidMount = async () => {
     this.setState({ loadError: false })
@@ -47,7 +50,7 @@ class ProfileScreen extends React.Component<any, State> {
           })
         const data: ProfileData = await response.json()
         if (response.status == 200) {
-          this.setState({ patient: data.patient, appointments: data.appointments, load: true })
+          this.setState({ data, load: true })
           !param && actions.Login(token, data.patient, data.patient.user)
           console.log('Успех fetch ' + logAction, 'patient: '+data.patient+', appointments: '+data.appointments)
         }
@@ -107,10 +110,11 @@ class ProfileScreen extends React.Component<any, State> {
 
   private ProfileData() {
     const { navigation } = this.props
-    const { buttonContainerSp, mrgTop, buttonWG, buttonTitle, h1, sub } = globalStyles
+    const { link, h1, sub } = globalStyles
     const { images, sectionContainer1, sectionTitle1, h2, h3, top } = locStyles
-    var { patient, appointments, refreshing } = this.state
-    var { address  } = patient
+    var { data, refreshing, visibleModal } = this.state
+    var { patient, appointments, history  } = data
+    var { address} = patient
     var { phone, enum_Gender, fullName, photo, id } = patient.user
     return (
       <ScrollView
@@ -127,54 +131,90 @@ class ProfileScreen extends React.Component<any, State> {
           <Text style={h1}>{fullName}</Text>
           <Text style={h2}>{address}</Text>
         </View>
-        <TouchableOpacity onPress={() => appointments.length && this._showModal()}>
+        {/* <TouchableOpacity onPress={() => appointments.length && this._showModal()}>
           <View style={[sectionContainer1, sub]}>
             <Text style={sectionTitle1}>Текущие записи    {appointments.length ? appointments.length : 0}</Text>
             <View style={{ width: w * 0.1 }}></View>
             <Icon name="expand-more" color='white' />
           </View>
-        </TouchableOpacity>
-        <View style={{ margin: 10 }}></View>
-        <Text style={h3}>Телефон:  {phone && phone} </Text>
-        <Text style={h3}>Пол:  {enum_Gender && enum_Gender == 1 ? Gender.male : enum_Gender == 2 && Gender.female} </Text>
-        {this.onModal()}
-        <View style={{ margin: 255 }}><Text> </Text></View>
+        </TouchableOpacity> */}
+     {this.myAppointments()}
+        <View style={{ margin: 50 }}></View>
+        {/* <Text style={h3}>Телефон:  {phone && phone} </Text>
+        <Text style={h3}>Пол:  {enum_Gender && enum_Gender == 1 ? Gender.male : enum_Gender == 2 && Gender.female} </Text> */}
+                
       </ScrollView>
     )
   }
-  private onModal() {
-    const { visibleModal, appointments } = this.state
+  // private onModal() {
+  //   const { visibleModal, data } = this.state
+  //   const { cardStyle, label2 } = globalStyles
+  //   const { navigation } = this.props
+  //   return (
+  //     <Provider>
+  //       <Portal>
+  //         <Modal visible={visibleModal} onDismiss={this._hideModal.bind(this)}
+  //           contentContainerStyle={{ position: 'absolute', top: 50, left: 0, right: 0 }}>
+  //           <Card containerStyle={cardStyle} >
+  //           <Text style={[label2,{marginBottom: 10}]}>Текущие записи:</Text>
+  //           {data.appointments.map((item: Appointment, id) => {
+  //             return <AppointmentCard data={item} key={id} 
+  //             onPress={() => navigation.navigate(DOCTORProfile, (item.doctor))}/>
+  //           })}
+  //           </Card>
+  //         </Modal>
+  //       </Portal >
+  //     </Provider >
+  //   )
+  // }
+
+  // _showModal() {    
+  //   this.setState({ visibleModal: !this.state.visibleModal });
+  // }
+  // _hideModal() {
+  //   this.setState({ visibleModal: false });
+  // }
+
+  private myAppointments() {
+    const { images, sectionContainer1, sectionTitle1, h2, h3, top } = locStyles
+    const { visibleModal, data } = this.state
+    var { patient, appointments, history  } = data
     const { cardStyle, label2 } = globalStyles
     const { navigation } = this.props
     return (
-      <Provider>
-        <Portal>
-          <Modal visible={visibleModal} onDismiss={this._hideModal.bind(this)}
-            contentContainerStyle={{ position: 'absolute', top: 50, left: 0, right: 0 }}>
-            <Card containerStyle={cardStyle} >
-            <Text style={[label2,{marginBottom: 10}]}>Текущие записи:</Text>
-            {appointments.map((item, id) => {
-              return <AppointmentCard data={item} key={id} />
+      <List.Section>
+      <List.Accordion
+        title={"Текущие записи  (" + (appointments.length ? appointments.length : 0)+')'}
+        left={props => <List.Icon {...props} icon="folder" />}
+        style={sectionContainer1}
+        titleStyle={sectionTitle1}
+      >
+        {appointments.map((item: Appointment, id) => {
+              return <AppointmentCard data={item} key={id} 
+              onPress={() => navigation.navigate(DOCTORProfile, (item.doctor))}/>
             })}
-            </Card>
-          </Modal>
-        </Portal >
-      </Provider >
-    )
-  }
+      </List.Accordion>
 
-  _showModal() {
-    this.setState({ visibleModal: true });
-  }
-  _hideModal() {
-    this.setState({ visibleModal: false });
+      <List.Accordion
+        title={"История записей (" + (history.length ? history.length : 0)+')'}
+        left={props => <List.Icon {...props} icon="folder" />}
+        style={sectionContainer1}
+        titleStyle={sectionTitle1}
+      >
+      {history.map((item: Appointment, id) => {
+            return <AppointmentCard data={item} key={id} 
+            onPress={() => navigation.navigate(DOCTORProfile, (item.doctor))}/>
+          })}
+      </List.Accordion>
+    </List.Section>
+    )
   }
   private async onRefresh() {
     this.setClearState();
     this.componentDidMount();
   }
   private setClearState() {
-    this.setState({ patient: initPatient, load: false, refreshing: false, loadError: false, })
+    this.setState({ data, loadError: false, })
   }
 }
 
@@ -184,14 +224,14 @@ const locStyles = StyleSheet.create({
     height: 40,
     borderRadius: 7,
     marginTop: 15,
-    marginHorizontal: w * 0.125,
-    width: w * 0.7,
+    width: w ,
+    alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: '#00B2D4',
   },
   sectionTitle1: {
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#fff'
   },
   h2: {

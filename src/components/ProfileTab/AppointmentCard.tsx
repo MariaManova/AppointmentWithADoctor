@@ -9,20 +9,19 @@ const AppointmentCard = ({ data, onPress }: any) => {
     const { container, images, h1, dateStyle, iconStyle } = styles
     const { dateTimeReceipt, doctor, uid } = data
     const { speciality, photo } = doctor
-    return (<View>
-        <View style={container}>
-            {/* <TouchableOpacity onPress={onPress}> */}
+    return (
+        <TouchableOpacity onPress={onPress}>
+            <View style={container}>
                 <Image source={photo ? { uri: photo.url } : require('../../../icon/noAvatar.png')}
                     style={images} />
-            {/* </TouchableOpacity> */}
-            <View style={{ flexDirection: 'column' }}>
-                <Text style={h1} onPress={onPress}>{speciality.nameSpeciality}</Text>
-                <Text style={dateStyle}>{toDate(dateTimeReceipt)} {toTime(dateTimeReceipt)}</Text>
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={h1} onPress={onPress}>{speciality.nameSpeciality}</Text>
+                    <Text style={dateStyle}>{toDate(dateTimeReceipt)} {toTime(dateTimeReceipt)}</Text>
+                </View>
+                <Icon name='chevron-right' style={iconStyle} />
             </View>
-            <Icon name='chevron-right' style={iconStyle} />
-        </View>
-        <Divider />
-    </View>
+            <Divider />
+        </TouchableOpacity>
     )
 }
 const toDate = (date: Date) => {
@@ -33,16 +32,16 @@ const toDate = (date: Date) => {
     var month = (d.getMonth() + 1).toString()
     month = months[+month - 1];
     return day + ' ' + month + ' ' + d.getFullYear() + ' г.';
-  }
-  const toTime = (time: Date) => {
-      var date = new Date(time);
-      var hours = (date.getHours()-3).toString();
-      hours = +hours<0 ? (+hours+24).toString(): hours;
-      hours = hours.length === 1 ? '0'+hours : hours;
-      var minutes = date.getMinutes().toString();
-      minutes = minutes.length === 1 ? '0'+minutes : minutes;
-      return hours + ':' + minutes;
-  }
+}
+const toTime = (time: Date) => {
+    var date = new Date(time);
+    var hours = (date.getHours() - 3).toString();
+    hours = +hours < 0 ? (+hours + 24).toString() : hours;
+    hours = hours.length === 1 ? '0' + hours : hours;
+    var minutes = date.getMinutes().toString();
+    minutes = minutes.length === 1 ? '0' + minutes : minutes;
+    return hours + ':' + minutes;
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -60,8 +59,8 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontSize: 18,
         width: w * 0.67,
-    },    
-    dateStyle:{
+    },
+    dateStyle: {
         marginLeft: 10
     },
     iconStyle: {
