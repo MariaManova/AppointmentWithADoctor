@@ -108,7 +108,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
             </View>
           </View>
 
-          <Text style={link}>{'Нет аккаунта?'}</Text>
+          <Text style={[link,{color: 'grey'}]}>{'Нет аккаунта?'}</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate(REGISTRATION)}
             disabled={submit} >
@@ -116,7 +116,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
           </TouchableOpacity>
           </Card>
 
-          
+          <View style={{ margin: 50 }}><Text> </Text></View>
 
         </ScrollView>
         {/* <TouchableOpacity
@@ -159,16 +159,6 @@ class AuthScreen extends PureComponent<any, State, Props> {
       this.checkFields();
     }
   }
-  private onCheckLogin(email: string) {
-    var { badEnter, errorText, colorField } = this.state
-    if (email.trim().length < 4 || email.trim().length > 20) {
-      badEnter.email = true;
-      colorField.email = 'red'
-      errorText.email = 'Логин должен быть длиной от 4 до 20 символов!'
-      this.setState({ badEnter, errorText, email, good: false });
-      return;
-    }
-  }
 
   private onChangePassword(password: string) {
     var { badEnter, errorText, colorField } = this.state
@@ -184,18 +174,6 @@ class AuthScreen extends PureComponent<any, State, Props> {
       colorField.password = ColorApp
       this.setState({ password: password.trim(), colorField });
       this.checkFields();
-    }
-  }
-  private onCheckPass(pass: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
-    var colorField = this.state.colorField
-    if (pass.trim().length < 8) {
-      badEnter.password = true;
-      errorText.password = 'Пароль должен иметь длину не менее 8 знаков!'
-      colorField.password = 'red'
-      this.setState({ badEnter, errorText, colorField, pass, good: false });
-      return;
     }
   }
   private onVisibility() {
