@@ -58,7 +58,7 @@ class SplashScreen extends React.Component<any, Props> {
 const RootStack = createStackNavigator(
   {
     Splash: SplashScreen,
-    App: !token ? NotAuthNavigation : userLogin.enum_Role == Role.admin ? NavigationAdmin : NavigationUser,
+    App: !userLogin.enum_Role ? NotAuthNavigation : userLogin.enum_Role == Role.admin ? NavigationAdmin : NavigationUser,
   },
   {
     initialRouteName: 'Splash',
