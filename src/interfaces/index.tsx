@@ -36,6 +36,7 @@ export interface Doctor {
 
 export interface Appointment {
   id: number,
+  doctor: Doctor,
   fk_Doctor: number,
   fk_Patient: number,
   dateTimeReceipt: Date,
