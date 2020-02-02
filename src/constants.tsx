@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Dimensions, Image, View, StyleSheet } from 'react-native'
+import { Category } from './enum/Enums';
 
 const win = Dimensions.get('window')
 export const h = win.height;
@@ -15,7 +16,18 @@ export const serverUrl = 'http://192.168.43.224:5000/api/'
 export const months = [
     'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа',
     'сентября', 'октября', 'ноября', 'декабря']
-
+export const categories = [
+    { value: '1',
+        label: Category.first
+    },
+    { value: '2',
+        label: Category.second
+    },
+    { value: '3',
+        label: Category.higher
+    },
+]
+    
 const styles = StyleSheet.create({
     im: {
         position: 'absolute',
