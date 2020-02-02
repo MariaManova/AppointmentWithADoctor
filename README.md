@@ -117,4 +117,4 @@ yarn add @react-native-community/datetimepicker
 ![](https://i.ibb.co/mRcDrmj/1-mini.jpg)
 ![](https://i.ibb.co/RBrBFgR/2-mini.png)
 ![](https://i.ibb.co/TrBjn7M/3-1-mini.png)
-![](https://i.ibb.co/4twPH3N/3-3-mini.png)
+![](https://i.ibb.co/tpp8H1h/3-3-mini.png)
