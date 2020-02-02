@@ -46,11 +46,11 @@ export interface Appointment {
 }
 
 export interface Speciality {
-  id: number,
+  id: string,
   nameSpeciality: string,
 }
 export interface PlaceOfWork {
-  id: number,
+  id: string,
   namePlace: string
 }
 export interface Patient {
@@ -177,11 +177,11 @@ export const initialUser: User = {
     user: initialUser
 }
 export const InitSpeciality: Speciality  ={
-  id: 0,
+  id: '0',
   nameSpeciality: '',
 }
 export const InitPlaceOfWork: PlaceOfWork  ={
-  id: 0,
+  id: '0',
   namePlace: '',
 }
 export const InitialImage = { uid: '', url: '', removed: false, createdAt: '' }
