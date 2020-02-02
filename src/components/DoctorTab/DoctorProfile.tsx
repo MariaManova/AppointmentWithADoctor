@@ -41,6 +41,7 @@ interface State {
   timeToday: Date[], //список доступного времени записи сегодня
   dateStr: string, //строка отображения даты
   timeAppt: Date, //время записи на прием
+  today: boolean,
   show: boolean,
   disBtn: boolean,
   submit: boolean,
@@ -71,15 +72,18 @@ for (var i = 0; i < 28; i++) {
 }
 t = new Date();
 var endOfWorkingDay = new Date(t);
-endOfWorkingDay = new Date(endOfWorkingDay.setUTCHours(16, 0, 0, 0))
+endOfWorkingDay = new Date(endOfWorkingDay.setHours(16, 0, 0, 0))
+var today = true;
 if (t > endOfWorkingDay) {
   t = new Date(t.setUTCHours(24, 0, 0, 0))
+  today = false
 }
 class DoctorProfile extends PureComponent<any, State, Props> {
   state = {
     data: InitialDoctor, load: true, loadError: false, refreshing: false,
     appreciated: {}, rating: 0, newRating: 0, estimate: false, myRef: React.createRef(),
-    confirmRating: false, numRated: 0, visibleModal: false, date: t, time: [], timeAll: time.slice(), timeToday: timeToday.slice(), dateStr: '',
+    confirmRating: false, numRated: 0, visibleModal: false, date: t, time: [],
+    timeAll: time.slice(), timeToday: timeToday.slice(), dateStr: '', today,
     show: false, disBtn: false, submit: false, confirmAppointment: false, timeAppt: null,
     badEnter: {
       date: false,
@@ -181,7 +185,7 @@ class DoctorProfile extends PureComponent<any, State, Props> {
                 fractions={1}
                 startingValue={rating}
               />
-              {(token && numRated) ? <Text style={[h3, { alignSelf: 'center' }]}>{numRated} оценок</Text> : <Text></Text>}
+              {(token && numRated) ? <Text style={[h3, { alignSelf: 'center' }]}>{numRated} оценок(ка)</Text> : <Text></Text>}
 
             </View>
               :
@@ -257,11 +261,16 @@ class DoctorProfile extends PureComponent<any, State, Props> {
 
   private onModal() {
     var { visibleModal, show, date, dateStr, disBtn, submit, badEnter, errorText, colorField, page,
-      pageOfTimes, pageSize, confirmAppointment, timeAppt, loadTable, loadError } = this.state
+      pageOfTimes, pageSize, confirmAppointment, timeAppt, loadTable, loadError, timeToday, today } = this.state
     const { cardStyle, inputStyle, buttonContainer, mrgTop, buttonWG, textInputPaper, inputPaper,
       fixToText, buttonTitle, h1, buttonWM, error, label, indicator } = globalStyles
     const { btnTableStyle, notSelectedBtnTableStyle, notSelectedSectionTitle } = locStyles
-    var totalPages = Math.ceil(time.length / pageSize)
+    var totalPages = 0;
+    if (today) {
+      totalPages = Math.ceil(timeToday.length / pageSize)
+    }
+    else
+      totalPages = Math.ceil(time.length / pageSize)
     return (
       <Provider>
         <Portal>
@@ -359,10 +368,11 @@ class DoctorProfile extends PureComponent<any, State, Props> {
                     label={'1-' + totalPages + ' of ' + (page + 1)}
                   />
                 </DataTable>
-                : 
+                :
                 <View style={{ margin: 10 }}>
-                {!loadError && <ActivityIndicator size={50} color={IndicatorApp} />}
-                </View>}
+                  {(!badEnter.date && !loadError) && <ActivityIndicator size={50} color={IndicatorApp} />}
+                </View>
+              }
               <Button
                 mode="contained"
                 uppercase={false}
@@ -407,7 +417,7 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     var logAction = 'Занятое время приема';
     const { userLogin, patient, token } = store.state;
     const doctor: Doctor = this.props.navigation.state.params
-    const { pageSize, timeAll, timeToday } = this.state
+    const { pageSize, timeAll, timeToday, badEnter, errorText } = this.state
     var times: Date[] = []
     console.log('date: ', date);
     this.setState({ loadError: false })
@@ -500,11 +510,15 @@ class DoctorProfile extends PureComponent<any, State, Props> {
   }
 
   private onChangeDate(date: any) {
-    var { badEnter, errorText, colorField } = this.state
+    var { badEnter, errorText, colorField, today } = this.state
     var dn = new Date()
     var d = new Date(date.nativeEvent.timestamp);
     d = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 3, 0, 0, 0)
     console.log('date now: ', dn)
+    if (d.toLocaleDateString() == dn.toLocaleDateString()) {
+      today = true;
+    }
+    else today = false;
     if (d.toLocaleDateString() == dn.toLocaleDateString() && dn > endOfWorkingDay) {
       badEnter.date = true;
       errorText.date = 'На сегодня больше записываться нельзя!'
@@ -525,7 +539,7 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     month = month.length == 1 ? '0' + month : month;
     var dateStr = day + '.' + month + '.' + d.getFullYear();
     console.log('dateStr: ', dateStr)
-    this.setState({ dateStr: dateStr, date: d, show: false, badEnter, errorText, colorField })    
+    this.setState({ dateStr: dateStr, date: d, show: false, badEnter, errorText, colorField, today })
   }
   private setInitDate(d: Date) {
     var day = d.getDate().toString();
