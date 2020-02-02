@@ -17,7 +17,6 @@ interface State {
   load: boolean,
   refreshing: boolean,
   loadError: boolean,
-  visibleModal: boolean,
 }
 interface ProfileData {  
   patient: Patient,
@@ -29,7 +28,7 @@ var data: ProfileData = {
 }
 
 class ProfileScreen extends React.Component<any, State> {
-  state = { data, load: false, refreshing: false, loadError: false, visibleModal: false };
+  state = { data, load: false, refreshing: false, loadError: false };
 
   componentDidMount = async () => {
     this.setState({ loadError: false })
@@ -112,7 +111,7 @@ class ProfileScreen extends React.Component<any, State> {
     const { navigation } = this.props
     const { link, h1, sub } = globalStyles
     const { images, sectionContainer1, sectionTitle1, h2, h3, top } = locStyles
-    var { data, refreshing, visibleModal } = this.state
+    var { data, refreshing } = this.state
     var { patient, appointments, history  } = data
     var { address} = patient
     var { phone, enum_Gender, fullName, photo, id } = patient.user
@@ -141,10 +140,9 @@ class ProfileScreen extends React.Component<any, State> {
   }
 
   private myAppointments() {
-    const { images, sectionContainer1, sectionTitle1, h2, h3, top } = locStyles
-    const { visibleModal, data } = this.state
-    var { patient, appointments, history  } = data
-    const { cardStyle, label2 } = globalStyles
+    const {  sectionContainer1, sectionTitle1, } = locStyles
+    const { data } = this.state
+    var { appointments, history  } = data
     const { navigation } = this.props
     return (
       <List.Section>
@@ -162,7 +160,7 @@ class ProfileScreen extends React.Component<any, State> {
 
       <List.Accordion
         title={"История записей (" + (history.length ? history.length : 0)+')'}
-        left={props => <List.Icon {...props} icon="folder" />}
+        left={props => <List.Icon {...props} icon="history" />}
         style={sectionContainer1}
         titleStyle={sectionTitle1}
       >
