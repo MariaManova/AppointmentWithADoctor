@@ -18,7 +18,8 @@ interface State { }
 interface AuthData {
   user: User,
 }
-var color = '#8b00ff'
+var actColor = '#8b00ff'
+var disColor = '#666'
 
 class RegistrationScreen extends Component<any, State, Props> {
   state = {
@@ -45,12 +46,13 @@ class RegistrationScreen extends Component<any, State, Props> {
       city: '', street: '', homeN: ''
     },
     colorField: {
-      email: color,
-      name: color,
-      address: color,
-      password: '#666',
-      repeatPassword: color,
-      city: color, street: color, homeN: color
+      email: disColor,
+      name: disColor,
+      address: disColor,
+      password: disColor,
+      repeatPassword: disColor,
+      city: disColor, street: disColor, homeN: disColor,
+      button: disColor
     }
   }
 
@@ -99,10 +101,7 @@ class RegistrationScreen extends Component<any, State, Props> {
         <View >
           {Background}
         </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
-          }>
+        <ScrollView>
           <Card containerStyle={cardStyle} >
             <View style={fixToText}>
               <View style={textInputPaper}>
@@ -170,6 +169,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   }]}
                   inputStyle={inputStyle}
                   onChangeText={this.onChangePassword.bind(this)}
+                  onTouchStart={this.activePass.bind(this)}
                   placeholder='Пароль'
                   autoCompleteType='password'
                   textContentType='password'
@@ -209,7 +209,8 @@ class RegistrationScreen extends Component<any, State, Props> {
                   uppercase={false}
                   onPress={this.onSubmit.bind(this)}
                   disabled={disBtn}
-                  contentStyle={buttonContainer}
+                  loading={submit}
+                  contentStyle={[buttonContainer, { backgroundColor: colorField.button }]}
                   labelStyle={buttonTitle}>Регистрация</Button>
               </View>
             </View>
@@ -314,6 +315,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   onPress={this._hideModal.bind(this)}
                   disabled={disBtnModal}
                   style={buttonContainer}
+                  loading={submit}
                   labelStyle={buttonTitle}>Подтвердить</Button>
               </View>
             </Card>
@@ -391,12 +393,12 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private checkFields() {
-    const { email, name, address, password, repeatPassword, badEnter } = this.state
+    const { email, name, address, password, repeatPassword, badEnter, colorField } = this.state
     if (email && name && address && password && repeatPassword &&
       !badEnter.email && !badEnter.name && !badEnter.address && !badEnter.password &&
       !badEnter.repeatPassword) {
-
-      this.setState({ disBtn: false })
+        colorField.button = actColor;
+        this.setState({ disBtn: false, colorField })
     }
   }
 
@@ -477,24 +479,6 @@ class RegistrationScreen extends Component<any, State, Props> {
       this.setState({ name: name.trim() });
     }
   }
-  private onPressAddress() {
-
-  }
-  private onChangeAddress(address: string) {
-    var { badEnter, errorText, colorField } = this.state
-    if (address == ' ') { return }
-    if (!address) {
-      badEnter.address = true;
-      errorText.address = 'Поле не заполнено'
-      this.setState({ badEnter, errorText, address, good: false, disBtn: true });
-      return;
-    }
-    else {
-      badEnter.address = false;
-      this.setState({ address });
-      this.checkFields()
-    }
-  }
   private onCheckAddress(address: string) {
     var { badEnter, errorText, colorField } = this.state
     if (!address) {
@@ -509,6 +493,11 @@ class RegistrationScreen extends Component<any, State, Props> {
       this.setState({ address: address.trim(), badEnter, colorField });
     }
   }
+  private activePass() {
+      var {  colorField } = this.state
+          colorField.password = actColor
+      this.setState({ colorField, width: 2  });
+  }
   private onChangePassword(password: string) {
     var { badEnter, errorText, colorField } = this.state
     if (password == ' ') { return }
@@ -521,13 +510,13 @@ class RegistrationScreen extends Component<any, State, Props> {
         badEnter.repeatPassword = true;
         errorText.repeatPassword = 'Пароли не совпадают'
         colorField.repeatPassword = colorError
-        this.setState({ badEnter, errorText, colorField, passGood: false, good: false, disBtn: true, width: 2 });
+        this.setState({ badEnter, errorText, colorField, passGood: false, good: false, disBtn: true });
       }
     }
     else {
-      colorField.password = color
+      colorField.password = actColor
     }
-    this.setState({ password: password.trim(), colorField, width: 2 });
+    this.setState({ password: password.trim(), colorField });
     this.checkFields()
   }
   private onCheckPass(pass: string) {
@@ -557,7 +546,7 @@ class RegistrationScreen extends Component<any, State, Props> {
       this.setState({ badEnter, errorText, colorField, passGood: false, good: false, disBtn: true });
     }
     else {
-      colorField.repeatPassword = color
+      colorField.repeatPassword = actColor
       badEnter.repeatPassword = false;
       this.setState({ badEnter, colorField });
       this.checkFields()
@@ -753,11 +742,11 @@ class RegistrationScreen extends Component<any, State, Props> {
         repeatPassword: ''
       },
       colorField: {
-        email: color,
-        name: color,
-        address: color,
+        email: actColor,
+        name: actColor,
+        address: actColor,
         password: '#666',
-        repeatPassword: color
+        repeatPassword: actColor
       }
     })
   }
