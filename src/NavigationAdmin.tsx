@@ -1,19 +1,19 @@
 import * as React from 'react';
 import {
-  View, Text, TouchableHighlight, Image, ScrollView, TouchableOpacity, SafeAreaView
+  View, Image, ScrollView, SafeAreaView, TouchableOpacity
 } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
-import { AuthScreen, globalStyles, ExitScreen, ListDoctorsScreen} from './components';
-import { SvgXml } from 'react-native-svg';
+import { globalStyles, ExitScreen, ListDoctorsScreen, ProfileScreen, DoctorCreationScreen, 
+  IconsElement, IconsMaterial, } from './components';
 import { ColorApp, NoAvatar } from './constants';
 import { useGlobal, store } from './store'
 import { PROFILE } from './routes';
 import { Icon } from 'react-native-elements';
+import { List } from 'react-native-paper';
 
-const { headDrawer, icon, back, imageIcon, imageCont, link, buttonTitle, button4 } = globalStyles
+const { headDrawer, icon, back, imageCont, imageIcon } = globalStyles
 const { userLogin, token } = store.state;
 
 const CustomDrowerComponent = (props: any) => (
@@ -23,24 +23,18 @@ const CustomDrowerComponent = (props: any) => (
         <TouchableOpacity
           onPress={() => props.navigation.closeDrawer()}
           style={back}>
-          <Icon name='arrow-back' size={20} />
+          <Icon name='arrow-back' size={20} color='#fff' />
         </TouchableOpacity>
+        <View style={imageCont}>
         <TouchableOpacity
           onPress={() => props.navigation.navigate(PROFILE)}
-          style={imageCont}>
+          >
           <Image
-            source={userLogin.photo ? { uri: userLogin.photo.url } : {uri: NoAvatar}}
+            source={userLogin.photo ? { uri: userLogin.photo.url } : { uri: NoAvatar }}
             style={imageIcon} />
         </TouchableOpacity>
-
-        <View style={button4}>
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate(PROFILE)}>
-            <View style={link}>
-              <Text style={buttonTitle}>{userLogin.fullName}</Text>
-            </View>
-          </TouchableOpacity>
         </View>
+
       </View>
       <DrawerItems {...props} />
     </ScrollView>
@@ -48,44 +42,65 @@ const CustomDrowerComponent = (props: any) => (
 )
 
 const MainDrawer = createDrawerNavigator({
+  Profile: {
+    screen: ProfileScreen,
+    navigationOptions: {
+      drawerLabel: 'Профиль',
+      drawerIcon: ({ tintColor }) => <Icon name="account-circle" size={25} color={tintColor} />
+    }
+  },
   ListDoctors: {
     screen: ListDoctorsScreen,
     navigationOptions: {
       drawerLabel: 'Врачи',
-      drawerIcon: ({ tintColor }) => <Icon name="search" size={25} color={tintColor}/>
+      drawerIcon: ({ tintColor }) => <Icon name="search" size={25} color={tintColor} />
     }
   },
-  // AddDoctor: {
-  //   screen: AddDoctorScreen,
-  //   navigationOptions: {
-  //     drawerLabel: 'Добавить врача',
-  //     drawerIcon: () => <Icon name='' style={icon} />
-  //   }
-  // },
+  DoctorCreation: {
+    screen: DoctorCreationScreen,
+    navigationOptions: {
+      drawerLabel: 'Админка',
+      drawerIcon: ({ tintColor }) => <Icon name='settings' size={25} color={tintColor} />
+    }
+  },
+  IconsMaterial: {
+    screen: IconsMaterial,
+    navigationOptions: {
+      drawerLabel: 'Иконки Material',
+      drawerIcon: ({ tintColor }) => <List.Icon icon="material-ui"/>
+    }
+  },
+  IconsElement: {
+    screen: IconsElement,
+    navigationOptions: {
+      drawerLabel: 'Иконки Element',
+      drawerIcon: ({ tintColor }) => <Icon name='pool' size={25} color={tintColor} />
+    }
+  },
   Auth: {
     screen: ExitScreen,
     navigationOptions: {
       drawerLabel: 'Выход',
-      drawerIcon: () => <Icon name='exit-to-app' style={icon} />
+      drawerIcon: ({ tintColor }) => <Icon name='highlight-off' style={icon} color={tintColor} />
     },
   },
 }, {
-  //initialRouteName: 'Tab',
-  drawerBackgroundColor: ColorApp,
-  //drawerPosition: 'right',
+  initialRouteName: 'ListDoctors',
+  drawerPosition: 'right',
   drawerType: 'slide',
   drawerWidth: 220,
+  minSwipeDistance: 50,
+  drawerLockMode: 'unlocked',
   swipeDistanceThreshold: 100,
   contentOptions: {
     itemConteinerStyle: {
       marginVertical: 10
     },
-    activeTintColor: 'white',
   },
   contentComponent: CustomDrowerComponent
 });
 
-const MainNavigation = createStackNavigator(
+const NavigationUser = createStackNavigator(
   {
     Drawer: MainDrawer,
   },
@@ -95,4 +110,4 @@ const MainNavigation = createStackNavigator(
   }
 );
 
-export default createAppContainer(MainNavigation);
+export default createAppContainer(NavigationUser);
