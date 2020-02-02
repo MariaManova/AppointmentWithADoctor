@@ -114,7 +114,7 @@ yarn add @react-native-community/datetimepicker
 
 ------------------
 ### Реализованные экраны: 
-![](https://ibb.co/FhDxk9r)
-![](https://ibb.co/4YvYqFh)
-![](https://ibb.co/FnbZfy4)
-![](https://ibb.co/C8phfD0)
+![](https://i.ibb.co/mRcDrmj/1-mini.jpg)
+![](https://i.ibb.co/RBrBFgR/2-mini.png)
+![](https://i.ibb.co/TrBjn7M/3-1-mini.png)
+![](https://i.ibb.co/4twPH3N/3-3-mini.png)
