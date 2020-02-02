@@ -41,16 +41,11 @@ class AuthScreen extends PureComponent<any, State, Props> {
         <Header title={'Вход'}
           leftIcon={backArrow}
           onPressLeft={() => {
-            //this.setClearState()
             navigation.goBack();
           }}
         />
         <View>{Background}</View>
 
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
-          }>
           <Card containerStyle={cardStyle} >
             <View style={fixToText}>
               <View style={{width: w * 0.72}}>
@@ -116,9 +111,6 @@ class AuthScreen extends PureComponent<any, State, Props> {
           </TouchableOpacity>
           </Card>
 
-          <View style={{ margin: 50 }}><Text> </Text></View>
-
-        </ScrollView>
         {/* <TouchableOpacity
             onPress={this.onPress.bind(this)}
             disabled={submit} >
