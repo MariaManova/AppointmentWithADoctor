@@ -294,7 +294,7 @@ const globalStyles = StyleSheet.create({
   },
   contStyle: {
     marginTop: -25,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     borderBottomColor: 'white',
     borderBottomWidth: 1
   },
