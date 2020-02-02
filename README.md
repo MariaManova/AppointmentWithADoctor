@@ -4,6 +4,13 @@
 ### Сервер AppointmentDoctorApi .NET CORE 2.1
 Находится здесь -> [AppointmentDoctorApi](https://github.com/MariaManova/AppointmentDoctorApi)
 
+------------------
+### Реализованные экраны: 
+![](https://i.ibb.co/mRcDrmj/1-mini.jpg)
+![](https://i.ibb.co/RBrBFgR/2-mini.png)
+![](https://i.ibb.co/TrBjn7M/3-1-mini.png)
+![](https://i.ibb.co/S3ZD0k7/3-3-mini.png)
+
 --------------
 ### Инструкция по развертыванию клиента React Native приведена ниже:
 1. Скачиваем дистрибутивы для разработки: 
@@ -111,10 +118,3 @@ npm install @react-native-community/datetimepicker --save
 or
 yarn add @react-native-community/datetimepicker
 ```
-
-------------------
-### Реализованные экраны: 
-![](https://i.ibb.co/mRcDrmj/1-mini.jpg)
-![](https://i.ibb.co/RBrBFgR/2-mini.png)
-![](https://i.ibb.co/TrBjn7M/3-1-mini.png)
-![](https://i.ibb.co/tpp8H1h/3-3-mini.png)
