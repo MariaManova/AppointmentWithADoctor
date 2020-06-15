@@ -14,4 +14,5 @@ export enum Gender
 export enum Role {
     admin = 1,
     user = 2,
+    doctor = 3,
 }

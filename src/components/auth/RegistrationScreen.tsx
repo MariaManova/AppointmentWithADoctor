@@ -7,7 +7,7 @@ import { Header, globalStyles } from '..';
 import { h, w, ColorApp, serverUrl, Background, IndicatorApp, colorError, BackgroundColor } from '../../constants'
 import { User, arrText, arrBool, Patient } from '../../interfaces'
 import { actions } from '../../store'
-import { Icon, Card, Input } from 'react-native-elements'
+import { Icon, Card, Input  ,CheckBox} from 'react-native-elements'
 import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
 import { Dropdown } from 'react-native-material-dropdown';
 import { CityList, VladimirStreetList } from './Lists';
@@ -28,7 +28,7 @@ class RegistrationScreen extends Component<any, State, Props> {
     color: ColorApp, visibility: false, visibleModal: false, width: 1,
     good: true, submit: false, disBtn: true, refreshing: false, disBtnModal: true,
     cityList: CityList, cityListAll: CityList, vladimirStreetList: VladimirStreetList,
-    vladimirStreetListAll: VladimirStreetList,
+    vladimirStreetListAll: VladimirStreetList, checked: false,
     badEnter: {
       email: false,
       name: false,
@@ -81,7 +81,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
 
   render() {
-    const { email, name, address, password, repeatPassword, visibility, visibleModal,
+    const { email, name, address, password, repeatPassword, visibility, visibleModal, 
       badEnter, errorText, colorField, submit, width, disBtn, refreshing } = this.state
     const { navigation } = this.props
     const { fixToText, fixToTextElem, icon, textInput, input, buttonContainer, buttonTitle,
@@ -201,6 +201,13 @@ class RegistrationScreen extends Component<any, State, Props> {
                 />
                 {badEnter.repeatPassword && <Text style={error}>{errorText.repeatPassword}</Text>}
               </View>
+            </View>
+            <View>
+            <CheckBox
+              title='Согласие на обработку персональных данных'
+              checked={this.state.checked}
+              onPress={() => this.setState({ checked: !this.state.checked })}
+            />
             </View>
             <View style={{ alignItems: 'center' }}>
               <View style={buttonWM}>
@@ -570,7 +577,7 @@ class RegistrationScreen extends Component<any, State, Props> {
 
   private onSubmit() {
     const { email, name, address, password, repeatPassword, badEnter, errorText,
-      colorField, good, city, street, homeN } = this.state
+      colorField, good, city, street, homeN, checked } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
@@ -603,6 +610,11 @@ class RegistrationScreen extends Component<any, State, Props> {
       badEnter.repeatPassword = true;
       errorText.repeatPassword = 'Поле не заполнено'
       colorField.repeatPassword = colorError
+      this.setState({ badEnter, errorText, colorField, good: false });
+    }
+    if (!checked) {
+      badEnter.repeatPassword = true;
+      errorText.repeatPassword = 'Нет согласия'
       this.setState({ badEnter, errorText, colorField, good: false });
     }
     if (!email || !name || !address || !password || !repeatPassword) {

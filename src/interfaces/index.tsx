@@ -45,6 +45,43 @@ export interface Appointment {
   removed: boolean
 }
 
+export interface Messages{
+  id: number,
+  user:User,
+  doctorChat: DoctorChat,
+  fk_Autor: number,
+  fk_DoctorChat: number,
+  text: string,
+  createdAt: Date,
+  editedAt: Date,
+  removed: boolean
+}
+
+export interface PatientCards{
+  id:number,
+  patient: Patient,
+  fk_Doctor: number,
+  fk_Patient: number,
+  diagnosis: string,
+  recommendations: string,
+  user: User,
+  createdAt: Date,
+  editedAt: Date,
+  removed: boolean
+}
+
+export interface DoctorChat{
+  id: number,
+  doctor: Doctor,
+  patient: Patient,
+  fk_Doctor: number,
+  fk_Patient: number,
+  message: Messages[],
+  createdAt: Date,
+  editedAt: Date,
+  removed: boolean
+}
+
 export interface Speciality {
   id: string,
   nameSpeciality: string,
@@ -141,7 +178,7 @@ export interface HomeData {
   newTantains: User[],
 }
 
-export interface AdvBool {
+export interface AdvBool { 
   title: boolean,
   text: boolean,
   category: boolean,
@@ -176,6 +213,7 @@ export const initialUser: User = {
     myAppointments: [],
     user: initialUser
 }
+
 export const InitSpeciality: Speciality  ={
   id: '0',
   nameSpeciality: '',
@@ -185,6 +223,7 @@ export const InitPlaceOfWork: PlaceOfWork  ={
   namePlace: '',
 }
 export const InitialImage = { uid: '', url: '', removed: false, createdAt: '' }
+
 export const InitialDoctor: Doctor = {
   id: 0, 
   fk_Speciality: 0,
@@ -198,6 +237,17 @@ export const InitialDoctor: Doctor = {
   user: initialUser,
   totalSumRating: 0,
   numRated: 0
+}
+export const InitialDoctorChat = {
+  id: 0,
+  doctor: InitialDoctor,
+  patient: initPatient,
+  fk_Doctor: 0,
+  fk_Patient: 0,
+  message: [],
+  createdAt: new Date,
+  editedAt: new Date,
+  removed: false
 }
 // export const initArrBool: arrBool = {
 //   email: false,

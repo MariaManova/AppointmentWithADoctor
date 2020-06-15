@@ -8,7 +8,7 @@ import { Header, globalStyles } from '..';
 import { h, w, ColorApp, serverUrl, Background, IndicatorApp } from '../../constants'
 import { User, AuthData, initAuthBool, initAuthTxt, initAuthColor, authBool, authText } from '../../interfaces'
 import { actions, store } from '../../store'
-import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../routes';
+import { NAVIGATIONAdmin, NAVIGATIONUser, NAVIGATIONDoctor, REGISTRATION } from '../../routes';
 import { Card, Input, Icon } from 'react-native-elements'
 import { Role } from '../../enum/Enums';
 import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
@@ -277,6 +277,9 @@ class AuthScreen extends PureComponent<any, State, Props> {
           }
           else if (data.userLogin.enum_Role == Role.user) {
             navigation.navigate(NAVIGATIONUser);
+          }
+          else if (data.userLogin.enum_Role == Role.doctor) {
+            navigation.navigate(NAVIGATIONDoctor);
           }
         }
       })

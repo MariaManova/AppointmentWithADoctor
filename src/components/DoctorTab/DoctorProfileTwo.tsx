@@ -7,14 +7,11 @@ import { Header, globalStyles, AppointmentCard,DoctorACard } from '..';
 import { Role, Category } from '../../enum/Enums';
 import { h, w, NoAvatar, serverUrl, IndicatorApp, ColorApp, months } from '../../constants'
 import { store } from '../../store';
-import { Doctor, InitialDoctor, User, HomeData, Appreciated, Appointment,AuthData, DoctorChat } from '../../interfaces';
+import { Doctor, InitialDoctor, User, HomeData, Appreciated, Appointment,AuthData } from '../../interfaces';
 import { Rating, AirbnbRating, Badge, Divider, Card, Tooltip, Icon, } from 'react-native-elements';
-import { AUTH, REGISTRATION, DOCTORProfile,CHATTWO, LISTChatScreenPatient } from '../../routes';
+import { AUTH, REGISTRATION, DOCTORProfile } from '../../routes';
 import { Button, Provider, Portal, Modal, TextInput, DataTable, List } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { NavigationEvents } from 'react-navigation';
-import { ListChatScreenDoctor } from '../OtherScreens/ListChatScreenDoctor';
-import { ListChatScreenPatient } from '../OtherScreens/ListChatScreenPatient';
 
 interface errorBool {
   date: boolean,
@@ -62,7 +59,6 @@ interface State {
   pageOfTimes: Date[],
   pageSize: number,
   confirmAppointment: boolean,
-  confirmChat: boolean,
   loadTable: boolean
 }
 const ratingArr = ['Ужасный', 'Плохой', 'Нормальный', 'Хороший', 'Отличный']
@@ -89,12 +85,12 @@ if (t > endOfWorkingDay) {
   t = new Date(t.setUTCHours(24, 0, 0, 0))
   today = false
 }
-class DoctorProfile extends PureComponent<any, State, Props> {
+class DoctorProfileTwo extends PureComponent<any, State, Props> {
   state = {
     doctorapps: [], history: [],
     data: InitialDoctor, load: true, loadError: false, refreshing: false,
     appreciated: {}, rating: 0, newRating: 0, estimate: false, myRef: React.createRef(),
-    confirmRating: false,  numRated: 0, visibleModal: false, date: t, time: [],
+    confirmRating: false, numRated: 0, visibleModal: false, date: t, time: [],
     timeAll: time.slice(), timeToday: timeToday.slice(), dateStr: '', today,
     show: false, disBtn: false, submit: false, confirmAppointment: false, timeAppt: null,
     badEnter: {
@@ -173,9 +169,8 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     const { images, h1, sub, link, indicator, mrgTop, buttonWG, buttonTitle,
       buttonContainerSp, buttonContenSp, cardStyle, } = globalStyles
     const { h2, h3, top, label, confirmStyle } = locStyles
-    const doctor: Doctor = this.props.navigation.state.params
     return (<View>
-      <Header title='Профиль врача'
+      <Header title='Записи Врачей'
         leftIcon={'arrow-back'}
         onPressLeft={() => navigation.goBack()} />
 
@@ -191,37 +186,7 @@ class DoctorProfile extends PureComponent<any, State, Props> {
             <Text style={h2}>{speciality.nameSpeciality}</Text>
           </View>
           {load ? (<View>
-            {!estimate ? <View style={mrgTop}>
-              <Rating
-                ratingCount={5}
-                showRating
-                readonly={token ? false : true}
-                onFinishRating={this.onEstimate.bind(this)}
-                fractions={1}
-                startingValue={rating}
-              />
-              {(token && numRated) ? <Text style={[h3, { alignSelf: 'center' }]}>{numRated} оценок(ка)</Text> : <Text></Text>}
-
-            </View>
-              :
-              <View>
-                <AirbnbRating
-                  reviews={ratingArr}
-                  defaultRating={0}
-                  onFinishRating={this.ratingCompleted.bind(this)}
-                />
-                <Button
-                  mode='outlined'
-                  uppercase={false}
-                  onPress={this.onConfirmRating.bind(this)}
-                  labelStyle={buttonTitle}
-                  style={confirmStyle}
-                  disabled={!confirmRating}
-                >
-                  Подтвердить
-                </Button>
-              </View>
-            }
+           
           </View>
           ) : !loadError && <ActivityIndicator style={[indicator, { marginTop: w * 0.7 }]} size={50} color={IndicatorApp} />
 
@@ -240,24 +205,9 @@ class DoctorProfile extends PureComponent<any, State, Props> {
           <Text style={{ color: 'black' }}> {placeOfWork.namePlace}</Text> </Text>
           {token ? (
             <View>
-            <Button
-              mode="contained"
-              uppercase={false}
-              onPress={this._showModal.bind(this)}
-              style={[buttonContainerSp, mrgTop, buttonWG]}
-              labelStyle={buttonTitle}>
-              Записаться на прием
-            </Button> 
-            <Button
-              mode="contained"
-              uppercase={false}
-              onPress={this.onCreate.bind(this)}
             
-              style={[buttonContainerSp, mrgTop, buttonWG]}
-              labelStyle={buttonTitle}>
-              Написать врачу
-            </Button> 
-       
+            {this.myAppointments()}
+        <View style={{ margin: 50 }}></View>
              </View>
             
           ) :
@@ -321,91 +271,6 @@ class DoctorProfile extends PureComponent<any, State, Props> {
     </List.Section>
     )
   }
-
-  private onCreate() {
-    const { date, confirmChat } = this.state
-    const { navigation } = this.props
-    var $this = this;
-    var obj, url, log: string;
-
-    const doctor: Doctor = this.props.navigation.state.params
-    const { userLogin, patient, token } = store.state;
-    obj = {
-      Fk_Doctor: doctor.id,
-      Fk_Patient: patient.id,
-    }
-    url = serverUrl + 'chat/post/messages';
-    log = 'Чат с врачем'
-
-    this.setState({ submit: true, disBtn: true })
-    fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Accept': "application/json",
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(obj), //JSON.stringify(
-    })
-      .then(function (response) {
-        if (response.status == 200 || response.status == 201) {
-          console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
-          console.log(response);
-         
-          $this.onRefresh();
-          return response.json();
-        }
-        if (response.status == 500) {
-          console.log('Server Error', "Status: " + response.status + ' ' + response)
-          Alert.alert('Внимание', 'Ошибка сервера! Status: ' + response.status + ' ' + response,
-            [{ text: 'OK' }]);
-        }
-        if (response.status == 400) {
-          console.log('Bad Request', "Status: " + response.status + ' ' + response)
-          Alert.alert('Внимание', 'Логин или пароль не верны!',
-            [{ text: 'OK' }]);
-        }
-        else {
-          console.log(response.statusText, "Status: " + response.status + ' ' + response)
-          Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
-            [{ text: 'OK' }]);
-        }
-        $this.setState({ submit: false, disBtn: false });
-        return
-      })
-      .then(function (data: DoctorChat) {
-        if (data) {
-              $this.setClearState();
-              navigation.navigate(LISTChatScreenPatient);
-        }
-      })
-      .catch(error => {
-        console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
-        if (error == 'TypeError: Network request failed') {
-          Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
-        }
-        else {
-          Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
-        }
-        $this.setState({ submit: false, disBtn: false })
-        return})
-        .catch(error => {
-          console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
-          if (error == 'TypeError: Network request failed') {
-            Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
-          }
-          else {
-            Alert.alert('Внимание', 'Ошибка входа. ' + error, [{ text: 'OK' }]);
-          }
-          $this.setState({ submit: false, disBtn: false })
-          return
-        
-      });
-  }
-
-   
-      
-
   private onModal() {
     var { visibleModal, show, date, dateStr, disBtn, submit, badEnter, errorText, colorField, page,
       pageOfTimes, pageSize, confirmAppointment, timeAppt, loadTable, loadError, timeToday, today } = this.state
@@ -528,7 +393,7 @@ class DoctorProfile extends PureComponent<any, State, Props> {
                 style={buttonContainer}
                 labelStyle={buttonTitle}>
                 Подтвердить
-            </Button> 
+            </Button>
             </Card>
           </Modal>
         </Portal >
@@ -982,5 +847,5 @@ const locStyles = StyleSheet.create({
   }
 })
 
-export { DoctorProfile }
+export { DoctorProfileTwo }
 

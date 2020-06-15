@@ -1,22 +1,25 @@
 import * as React from 'react';
 import {
-  View, Text, TouchableHighlight, Image, ScrollView, Button, ActivityIndicator, Alert, ColorPropType, SafeAreaView, TouchableOpacity
+  View, Image, ScrollView, SafeAreaView, TouchableOpacity
 } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
-import { globalStyles, ExitScreen, ListDoctorsScreen, ProfileScreen, } from './components';
-import { SvgXml } from 'react-native-svg';
+import { globalStyles, ExitScreen, ListDoctorsScreen, ProfileScreen, DoctorCreationScreen, 
+  IconsElement, IconsMaterial } from './components';
 import { ColorApp, NoAvatar } from './constants';
 import { useGlobal, store } from './store'
-import { PROFILE, LISTChatScreenPatient } from './routes';
+import { PROFILE } from './routes';
 import { Icon } from 'react-native-elements';
-import { ListChatScreenPatient } from './components/OtherScreens/ListChatScreenPatient';
-import { ListScreenPatientCard } from './components/OtherScreens/ListScreenPatientCard';
+import { List } from 'react-native-paper';
+import { ListDoctorsScreenTwo } from './components/DoctorTab/ListDoctorsScreenTwo';
+import { ListChatScreenDoctor } from './components/OtherScreens/ListChatScreenDoctor';
+import { DoctorAppointment } from './components/DoctorTab/DoctorAppointment';
+import { ListScreenDoctorCard } from './components/OtherScreens/ListScreenDoctorCard';
 
 
-const { headDrawer, icon, back, imageCont, imageIcon, button4, link, buttonTitle } = globalStyles
+
+const { headDrawer, icon, back, imageCont, imageIcon } = globalStyles
 const { userLogin, token } = store.state;
 
 const CustomDrowerComponent = (props: any) => (
@@ -59,18 +62,39 @@ const MainDrawer = createDrawerNavigator({
       drawerIcon: ({ tintColor }) => <Icon name="search" size={25} color={tintColor} />
     }
   },
-  Chat: {
-    screen: ListChatScreenPatient,
+  Appointment: {
+    screen: ListDoctorsScreenTwo,
     navigationOptions: {
-      drawerLabel: 'Сообщения',
-      drawerIcon: ({ tintColor }) => <Icon name="message" size={25} color={tintColor} />
+      drawerLabel: 'Записи',
+      drawerIcon: ({ tintColor }) => <Icon name="book" size={25} color={tintColor} />
     }
   },
-  Card: {
-    screen: ListScreenPatientCard,
+  Chat: {
+    screen: ListChatScreenDoctor,
     navigationOptions: {
-      drawerLabel: 'Карта болезней',
-      drawerIcon: ({ tintColor }) => <Icon name="book" size={25} color={tintColor} />
+      drawerLabel: 'Сообщения',
+      drawerIcon: ({ tintColor }) => <Icon name='message' size={25} color={tintColor} />
+    }
+  },
+  Diagnosis: {
+    screen: ListScreenDoctorCard,
+    navigationOptions: {
+      drawerLabel: 'Назначения',
+      drawerIcon: ({ tintColor }) => <Icon name='border-color' size={25} color={tintColor} />
+    }
+  },
+  IconsMaterial: {
+    screen: IconsMaterial,
+    navigationOptions: {
+      drawerLabel: 'Иконки Material',
+      drawerIcon: ({ tintColor }) => <List.Icon icon="material-ui"/>
+    }
+  },
+  IconsElement: {
+    screen: IconsElement,
+    navigationOptions: {
+      drawerLabel: 'Иконки Element',
+      drawerIcon: ({ tintColor }) => <Icon name='pool' size={25} color={tintColor} />
     }
   },
   Auth: {
